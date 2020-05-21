@@ -6,4 +6,9 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+/* GET home page. */
+router.get('/buttons', function(req, res, next) {
+  res.render('pages/ui-features/buttons', { title: 'Express' });
+});
+
 module.exports = router;
