@@ -28,10 +28,6 @@
   <!-- partial:partials/_navbar.html -->
   <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
 	<div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
-	  <a class="navbar-brand brand-logo" href="index.html">
-		<img src="/images/logo.svg" alt="logo" /> </a>
-	  <a class="navbar-brand brand-logo-mini" href="index.html">
-		<img src="/images/logo-mini.svg" alt="logo" /> </a>
 	</div>
 	<div class="navbar-menu-wrapper d-flex align-items-center">
 	  <ul class="navbar-nav">
@@ -39,7 +35,7 @@
 	  </ul>
 	  <form class="ml-auto search-form d-none d-md-block" action="#">
 		<div class="form-group">
-		  <input type="search" id="stock-input" class="form-control" placeholder="请输入股票id或者名称">
+		  <input type="search" id="stock-input" class="form-control"  placeholder="请输入股票id或者名称" data-provide="typeahead"  autocomplete="off"/>
 		</div>
 	  </form>
 	  <ul class="navbar-nav ml-auto">
@@ -49,35 +45,6 @@
 			<span class="count">7</span>
 		  </a>
 		  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
-			<a class="dropdown-item py-3">
-			  <p class="mb-0 font-weight-medium float-left">You have 7 unread mails </p>
-			  <span class="badge badge-pill badge-primary float-right">View all</span>
-			</a>
-			<div class="dropdown-divider"></div>
-			<a class="dropdown-item preview-item">
-			  <div class="preview-thumbnail">
-				<img src="/images/faces/face10.jpg" alt="image" class="img-sm profile-pic"> </div>
-			  <div class="preview-item-content flex-grow py-2">
-				<p class="preview-subject ellipsis font-weight-medium text-dark">Marian Garner </p>
-				<p class="font-weight-light small-text"> The meeting is cancelled </p>
-			  </div>
-			</a>
-			<a class="dropdown-item preview-item">
-			  <div class="preview-thumbnail">
-				<img src="/images/faces/face12.jpg" alt="image" class="img-sm profile-pic"> </div>
-			  <div class="preview-item-content flex-grow py-2">
-				<p class="preview-subject ellipsis font-weight-medium text-dark">David Grey </p>
-				<p class="font-weight-light small-text"> The meeting is cancelled </p>
-			  </div>
-			</a>
-			<a class="dropdown-item preview-item">
-			  <div class="preview-thumbnail">
-				<img src="/images/faces/face1.jpg" alt="image" class="img-sm profile-pic"> </div>
-			  <div class="preview-item-content flex-grow py-2">
-				<p class="preview-subject ellipsis font-weight-medium text-dark">Travis Jenkins </p>
-				<p class="font-weight-light small-text"> The meeting is cancelled </p>
-			  </div>
-			</a>
 		  </div>
 		</li>
 		<li class="nav-item dropdown">
@@ -146,7 +113,6 @@
 	<!-- partial:partials/_sidebar.html -->
 	<nav class="sidebar sidebar-offcanvas" id="sidebar">
 	  <ul class="nav">
-		<li class="nav-item nav-category">数据类型</li>
 		<li class="nav-item">
 		  <a class="nav-link" href="index.html">
 			<i class="menu-icon typcn typcn-document-text"></i>
@@ -685,6 +651,7 @@
 </div>
 <!-- container-scroller -->
 <!-- plugins:js -->
+<script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="/vendors/js/vendor.bundle.base.js"></script>
 <script src="/vendors/js/vendor.bundle.addons.js"></script>
@@ -697,7 +664,46 @@
 <!-- endinject -->
 <!-- Custom js for this page-->
 <script src="/js/demo_1/dashboard.js"></script>
-<script src="/js/shared/net.js"></script>
 <!-- End custom js for this page-->
+<script>
+	$(function () {
+		var dataset;
+		$("#stock-input").bind('keyup',function () {
+			var value = $("#stock-input").val();
+			if (!isNaN(value)){
+				getStockInfo("stockId",value);
+			}else {
+				getStockInfo("stockName",value);
+			}
+		})
+
+		function getStockInfo(paramName,paramValue) {
+			$.ajax({
+				type:"GET",
+				url:"http://127.0.0.1:8080/stockList?" + paramName + "=" + paramValue,
+				async: false,
+				beforeSend:function(){
+					console.log("start to request /stockList")
+				},
+				success:function (result) {
+					fillData(result.data)
+				},
+				error:function(e){
+					console.log("function error")
+					console.log(e.status)
+					console.log(e.responseText)
+				}
+			});
+		}
+
+		function fillData(data) {
+			var displayData = data.map(x => {return x.stockId + "(" + x.stockName + ")"})
+			$('#stock-input').typeahead({
+
+			})
+		}
+
+	});
+</script>
 </body>
 </html>
