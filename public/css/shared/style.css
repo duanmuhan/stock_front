@@ -620,6 +620,7 @@ pre {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
+  width: 100%;
   flex-wrap: wrap;
   margin-right: -12.5px;
   margin-left: -12.5px; }
@@ -3901,6 +3902,8 @@ input[type="button"].btn-block {
   -ms-flex-direction: column;
   flex-direction: column;
   min-width: 0;
+  width: 100%;
+  margin: auto;
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;

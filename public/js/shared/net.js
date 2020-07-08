@@ -70,15 +70,15 @@ $(function () {
 });
 
 function drawKitem(kDataSet) {
-    var h = $("#stock-kitem").height;
-    var w = $("#stock-kitem").width;
+    var h = $("#stock-kitem").height();
+    var w = $("#stock-kitem").width();
     var dataCnt = kDataSet.kitemList.length;
     var barPadding = 4;
     var svg = d3.select("#stock-kitem").append('svg').attr('width', w).attr('height', h).style("background", "#ffffff");
-    var minPrice = d3.min(kDataSet,getLow);
-    var maxPrice = d3.max(kDataSet,getHigh);
+    var minPrice = d3.min(kDataSet.kitemList.map(e=>e.low));
+    var maxPrice = d3.max(kDataSet.kitemList.map(e=>e.high));
     var yscale = d3.scaleLinear().domain([minPrice, maxPrice]).range([0, h]);
-    svg.selectAll("line").data(kDataSet).enter().append('line').attr('x1',function (d,i) {
+    svg.selectAll("line").data(kDataSet.kitemList).enter().append('line').attr('x1',function (d,i) {
         return i * (w/dataCnt) + (w/dataCnt - barPadding)/2;
     }).attr('x2',function (d,i) {
         return i * (w / dataCnt) + (w / dataCnt - barPadding) / 2
@@ -88,10 +88,10 @@ function drawKitem(kDataSet) {
         return h - yscale(getLow(d));
     }).attr("stroke",getColor);
 
-    svg.selectAll("rect").data(kDataSet).enter().append('rect').attr('x',function (d,i) {
+    svg.selectAll("rect").data(kDataSet.kitemList).enter().append('rect').attr('x',function (d,i) {
         return i * (w / dataCnt)
     }).attr('y', function(d, i) {
-        return h - yscale(d3.max(getOpenPrice(d),getClosePrice(d)));
+        return h - yscale(Math.max(getOpenPrice(d),getClosePrice(d)));
     }).attr('width', function(d, i) {
         return w / dataCnt - barPadding;
     }).attr('height', function(d, i) {
@@ -104,32 +104,46 @@ function drawKitem(kDataSet) {
         .attr('title', function(d, i) {
             return "交易日期：" + getDate(d) + "&#13;交易量：" + getDealAmount(d);
      });
+
+    var scale_x = d3.scaleLinear().domain([0,dataCnt-1]).range([0,w]);
+    var scale_y = d3.scaleLinear().domain([0,maxPrice]).range([h,0]);
+    var line_generator = d3.line().x(function (d,i) {
+        return scale_x(i);
+    }).y(function (d) {
+        return scale_y(d);
+    })
+
+    svg.append("path").attr("d",line_generator(kDataSet.kitemList));
+    var x_axis = d3.axisBottom().scale(scale_x), y_axis = d3.axisLeft().scale(scale_y)
+    svg.append("g").call(x_axis);
+    svg.append("g").call(y_axis);
 }
 
+
 function getLow(kItem) {
-    return kItem.get("low");
+    return kItem.low;
 }
 
 function getHigh(kItem) {
-    return kItem.get("high");
+    return kItem.high;
 }
 
 function getColor(kItem) {
-    return kItem.get("openPrice") > kItem.get("closePrice") ? "red":"green";
+    return kItem.openPrice >= kItem.closePrice ? "red":"green";
 }
 
 function getOpenPrice(kItem) {
-    return kItem.get("openPrice");
+    return kItem.openPrice;
 }
 
 function getClosePrice(kItem) {
-    return kItem.get("closePrice");
+    return kItem.closePrice;
 }
 
 function getDate(kItem) {
-    return kItem.get("date");
+    return kItem.date;
 }
 
 function getDealAmount(kItem) {
-    return kItem.get("dealAmount");
+    return kItem.dealAmount;
 }
