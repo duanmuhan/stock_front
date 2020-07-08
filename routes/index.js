@@ -6,4 +6,16 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/statics', function(req, res, next) {
+  res.render('pages/charts/statics', { title: '统计数据' });
+});
+
+router.get('/basicInfo', function(req, res, next) {
+  res.render('pages/ui-features/basicInfo', { title: '基本信息' });
+});
+
+router.get('/news', function(req, res, next) {
+  res.render('pages/forms/basic_elements', { title: '公告新闻' });
+});
+
 module.exports = router;

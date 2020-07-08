@@ -37,15 +37,32 @@ $(function () {
                 objMap[x.stockName] = x.stockId;
                 return x.stockId + "(" + x.stockName + ")"
             });
-            currentStockId - x.stockId;
             process(displayData);
         },
         scrollBar: true,
         updater:function(item){
-            var currentStockId = item.substr(0,6);
+            currentStockId = item.substr(0,6);
             $.ajax({
                 type:"GET",
                 url:"http://127.0.0.1:8080/kitem?" + "stockId=" + currentStockId,
+                async: false,
+                beforeSend:function(){
+                    console.log("start to request /stockList")
+                },
+                success:function (result) {
+                    d3.select("svg").remove()
+                    kitem = result.data;
+                    drawKitem(result.data);
+                },
+                error:function(e){
+                    console.log("function error")
+                    console.log(e.status)
+                    console.log(e.responseText)
+                }
+            })
+            $.ajax({
+                type:"GET",
+                url:"http://127.0.0.1:8080/average?" + "stockId=" + currentStockId,
                 async: false,
                 beforeSend:function(){
                     console.log("start to request /stockList")
