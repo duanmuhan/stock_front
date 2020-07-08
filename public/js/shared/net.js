@@ -37,6 +37,7 @@ $(function () {
                 objMap[x.stockName] = x.stockId;
                 return x.stockId + "(" + x.stockName + ")"
             });
+            currentStockId - x.stockId;
             process(displayData);
         },
         scrollBar: true,
@@ -50,6 +51,7 @@ $(function () {
                     console.log("start to request /stockList")
                 },
                 success:function (result) {
+                    d3.select("svg").remove()
                     kitem = result.data;
                     drawKitem(result.data);
                 },
@@ -72,28 +74,35 @@ $(function () {
 function drawKitem(kDataSet) {
     var h = $("#stock-kitem").height();
     var w = $("#stock-kitem").width();
+    var rightPadding = 30;
+    var height = h-rightPadding;
+    var width = w-rightPadding;
     var dataCnt = kDataSet.kitemList.length;
     var barPadding = 4;
     var svg = d3.select("#stock-kitem").append('svg').attr('width', w).attr('height', h).style("background", "#ffffff");
+    var dateArray = kDataSet.kitemList.map(e=>parseInt(e.date));
+    var maxDate = d3.max(dateArray)
+    var minDate = d3.min(dateArray)
     var minPrice = d3.min(kDataSet.kitemList.map(e=>e.low));
     var maxPrice = d3.max(kDataSet.kitemList.map(e=>e.high));
-    var yscale = d3.scaleLinear().domain([minPrice, maxPrice]).range([0, h]);
+
+    var yscale = d3.scaleLinear().domain([minPrice, maxPrice]).range([0,height]);
     svg.selectAll("line").data(kDataSet.kitemList).enter().append('line').attr('x1',function (d,i) {
-        return i * (w/dataCnt) + (w/dataCnt - barPadding)/2;
+        return i * (width/dataCnt) + (w/dataCnt - barPadding)/2 + rightPadding;
     }).attr('x2',function (d,i) {
-        return i * (w / dataCnt) + (w / dataCnt - barPadding) / 2
+        return i * (width / dataCnt) + (w / dataCnt - barPadding) / 2 + rightPadding;
     }).attr('y1',function (d,i) {
-        return h - yscale(getHigh(d));
+        return height - yscale(getHigh(d));
     }).attr('y2',function (d,i) {
-        return h - yscale(getLow(d));
+        return height - yscale(getLow(d));
     }).attr("stroke",getColor);
 
     svg.selectAll("rect").data(kDataSet.kitemList).enter().append('rect').attr('x',function (d,i) {
-        return i * (w / dataCnt)
+        return i * (width / dataCnt) + rightPadding;
     }).attr('y', function(d, i) {
-        return h - yscale(Math.max(getOpenPrice(d),getClosePrice(d)));
+        return height - yscale(Math.max(getOpenPrice(d),getClosePrice(d)));
     }).attr('width', function(d, i) {
-        return w / dataCnt - barPadding;
+        return width / dataCnt - barPadding;
     }).attr('height', function(d, i) {
         var vv = Math.abs(yscale(getOpenPrice(d)) - yscale(getClosePrice(d)));
         if (vv < 0.5) {
@@ -105,18 +114,10 @@ function drawKitem(kDataSet) {
             return "交易日期：" + getDate(d) + "&#13;交易量：" + getDealAmount(d);
      });
 
-    var scale_x = d3.scaleLinear().domain([0,dataCnt-1]).range([0,w]);
-    var scale_y = d3.scaleLinear().domain([0,maxPrice]).range([h,0]);
-    var line_generator = d3.line().x(function (d,i) {
-        return scale_x(i);
-    }).y(function (d) {
-        return scale_y(d);
-    })
-
-    svg.append("path").attr("d",line_generator(kDataSet.kitemList));
-    var x_axis = d3.axisBottom().scale(scale_x), y_axis = d3.axisLeft().scale(scale_y)
-    svg.append("g").call(x_axis);
-    svg.append("g").call(y_axis);
+    var scale_x = d3.scaleLinear().domain([minDate,maxDate]).range([20,w]);
+    var scale_y = d3.scaleLinear().domain([minPrice,maxPrice]).range([h-20,0]);
+    svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
+    svg.append("g").attr("font-size","20").attr('transform', 'translate(30,0)').call(d3.axisLeft().scale(scale_y));
 }
 
 
@@ -129,7 +130,7 @@ function getHigh(kItem) {
 }
 
 function getColor(kItem) {
-    return kItem.openPrice >= kItem.closePrice ? "red":"green";
+    return kItem.openPrice <= kItem.closePrice ? "red":"green";
 }
 
 function getOpenPrice(kItem) {
