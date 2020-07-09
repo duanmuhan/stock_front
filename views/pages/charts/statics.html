@@ -183,15 +183,14 @@
                     <h4 class="card-title mb-0">股票价格-分红散点图</h4>
                   </div>
                   <div class="card-body">
-                    <canvas id="mixed-chart" height="100"></canvas>
-                    <div class="mr-5" id="mixed-chart-legend"></div>
+                    <div id="mixed-chart" style="height: 600px"></div>
                   </div>
                 </div>
               </div>
               <div class="col-lg-6 grid-margin stretch-card">
                 <div class="card">
                   <div class="p-4 border-bottom bg-light">
-                    <h4 class="card-title mb-0">Line Chart</h4>
+                    <h4 class="card-title mb-0">股票市值直方图</h4>
                   </div>
                   <div class="card-body">
                     <div id="lineChart" style="height:250px"></div>
@@ -333,7 +332,8 @@
     <!-- Plugin js for this page-->
     <!-- End plugin js for this page-->
     <!-- inject:js -->
-    <script src="/js/shared/off-canvas.js"></script>
-    <script src="/js/shared/misc.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/js/shared/statics.js"></script>
   </body>
 </html>
