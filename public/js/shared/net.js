@@ -62,22 +62,18 @@ $(function () {
             })
             $.ajax({
                 type:"GET",
-                url:"http://127.0.0.1:8080/average?" + "stockId=" + currentStockId,
+                url:"http://127.0.0.1:8080/stock/overview?" + "stockId=" + currentStockId,
                 async: false,
                 beforeSend:function(){
-                    console.log("start to request /stockList")
+                    console.log("start to request /stock/overview")
                 },
                 success:function (result) {
-                    d3.select("svg").remove()
-                    kitem = result.data;
-                    drawKitem(result.data);
+                    console.log(result)
                 },
                 error:function(e){
                     console.log("function error")
-                    console.log(e.status)
-                    console.log(e.responseText)
                 }
-            })
+            });
             return item;
         },
         afterSelect:function (item) {
@@ -87,6 +83,10 @@ $(function () {
     })
 
 });
+
+function f() {
+
+}
 
 function drawKitem(kDataSet) {
     var h = $("#stock-kitem").height();
