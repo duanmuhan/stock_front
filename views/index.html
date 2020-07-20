@@ -127,13 +127,13 @@
 		  </a>
 		</li>
 		<li class="nav-item">
-		  <a class="nav-link" href="/basicInfo">
+		  <a class="nav-link" href="/forms">
 			<i class="menu-icon typcn typcn-th-large-outline"></i>
 			<span class="menu-title">列表统计数据</span>
 		  </a>
 		</li>
 		<li class="nav-item">
-		  <a class="nav-link" href="pages/tables/basic-table.html">
+		  <a class="nav-link" href="/news">
 			<i class="menu-icon typcn typcn-bell"></i>
 			<span class="menu-title">公告新闻</span>
 		  </a>
@@ -156,9 +156,6 @@
 						<h5 class="mb-0 font-weight-medium text-primary">价格</h5>
 						<p  id="rise-percent" class="mb-0 text-muted">+14.00(+0.50%)</p>
 					  </div>
-					  <div class="wrapper my-auto ml-auto ml-lg-4">
-						<canvas height="50" width="100" id="stats-line-graph-1"></canvas>
-					  </div>
 					</div>
 				  </div>
 				  <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
@@ -166,9 +163,6 @@
 					  <div class="wrapper">
 						<h3 id="deal-amount" class="mb-0 font-weight-semibold">15,236</h3>
 						<h5 class="mb-0 font-weight-medium text-primary">成交量</h5>
-					  </div>
-					  <div class="wrapper my-auto ml-auto ml-lg-4">
-						<canvas height="50" width="100" id="stats-line-graph-2"></canvas>
 					  </div>
 					</div>
 				  </div>
@@ -178,9 +172,6 @@
 						<h3 class="mb-0 font-weight-semibold">7,688</h3>
 						<h5 class="mb-0 font-weight-medium text-primary">成交金额</h5>
 					  </div>
-					  <div class="wrapper my-auto ml-auto ml-lg-4">
-						<canvas height="50" width="100" id="stats-line-graph-3"></canvas>
-					  </div>
 					</div>
 				  </div>
 				  <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
@@ -188,9 +179,6 @@
 					  <div class="wrapper">
 						<h3 class="mb-0 font-weight-semibold">1,553</h3>
 						<h5 class="mb-0 font-weight-medium text-primary">涨跌幅</h5>
-					  </div>
-					  <div class="wrapper my-auto ml-auto ml-lg-4">
-						<canvas height="50" width="100" id="stats-line-graph-4"></canvas>
 					  </div>
 					</div>
 				  </div>
@@ -237,9 +225,21 @@
 						<div class="card-body">
 							<div class="p-4 pr-5 border-bottom bg-light d-flex justify-content-between">
 								<h4 class="card-title mb-0">其他行情指标</h4>
-								<id id="scatter-chart-legend"></id>
+								<div class="d-flex flex-column flex-lg-row">
+									<ul class="nav nav-tabs sales-mini-tabs ml-lg-auto mb-4 mb-md-0" role="tablist">
+										<li class="nav-item">
+											<a class="nav-link active" id="sales-statistics_switch_1" data-toggle="tab" role="tab" aria-selected="true">均线</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" id="sales-statistics_switch_2" data-toggle="tab" role="tab" aria-selected="false">macd</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" id="sales-statistics_switch_3" data-toggle="tab" role="tab" aria-selected="false">kdj</a>
+										</li>
+									</ul>
+								</div>
 							</div>
-							<div id="stock-average" style="width:1000px; height: 600px" ></div>
+							<div id="stock-index" style="width:1000px; height: 600px" ></div>
 						</div>
 					</div>
 				</div>

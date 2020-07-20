@@ -10,12 +10,12 @@ router.get('/statics', function(req, res, next) {
   res.render('pages/charts/statics', { title: '统计数据' });
 });
 
-router.get('/basicInfo', function(req, res, next) {
-  res.render('pages/ui-features/basicInfo', { title: '基本信息' });
+router.get('/forms', function(req, res, next) {
+  res.render('pages/forms/form_page', { title: '基本信息' });
 });
 
 router.get('/news', function(req, res, next) {
-  res.render('pages/forms/basic_elements', { title: '公告新闻' });
+  res.render('pages/ui-features/news', { title: '公告新闻' });
 });
 
 module.exports = router;

@@ -74,6 +74,21 @@ $(function () {
                     console.log("function error")
                 }
             });
+            $.ajax({
+                type:"GET",
+                url:"http://127.0.0.1:8080/average?" + "stockId=" + currentStockId,
+                async: false,
+                beforeSend:function(){
+                    console.log("start to request /average")
+                },
+                success:function (result) {
+                    var dataList = result.data.fiveDayList;
+                    drawAverage(dataList)
+                },
+                error:function(e){
+                    console.log("function error")
+                }
+            });
             return item;
         },
         afterSelect:function (item) {
@@ -103,7 +118,7 @@ function drawKitem(kDataSet) {
     var minPrice = d3.min(kDataSet.kitemList.map(e=>e.low));
     var maxPrice = d3.max(kDataSet.kitemList.map(e=>e.high));
 
-    var yscale = d3.scaleLinear().domain([minPrice, maxPrice]).range([0,height]);
+    var yscale = d3.scaleLinear().domain([0.8*minPrice, 1.2*maxPrice]).range([0,height-20]);
     svg.selectAll("line").data(kDataSet.kitemList).enter().append('line').attr('x1',function (d,i) {
         return i * (width/dataCnt) + (w/dataCnt - barPadding)/2 + rightPadding;
     }).attr('x2',function (d,i) {
@@ -132,9 +147,9 @@ function drawKitem(kDataSet) {
      });
 
     var scale_x = d3.scaleLinear().domain([minDate,maxDate]).range([20,w]);
-    var scale_y = d3.scaleLinear().domain([minPrice,maxPrice]).range([h-20,0]);
+    var scale_y = d3.scaleLinear().domain([0.8*minPrice,1.2*maxPrice]).range([h-20,0]);
     svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
-    svg.append("g").attr("font-size","20").attr('transform', 'translate(30,0)').call(d3.axisLeft().scale(scale_y));
+    svg.append("g").attr("font-size","20").attr('transform', 'translate(20,0)').call(d3.axisLeft().scale(scale_y));
 }
 
 
@@ -164,4 +179,34 @@ function getDate(kItem) {
 
 function getDealAmount(kItem) {
     return kItem.dealAmount;
+}
+
+function drawAverage(averageDataSet) {
+    var h = $("#stock-index").height();
+    var w = $("#stock-index").width();
+    var rightPadding = 30;
+    var height = h-rightPadding;
+    var width = w-rightPadding;
+    var dataCnt = averageDataSet.length;
+    var barPadding = 4;
+    var svg = d3.select("#stock-index").append('svg').attr('width', w).attr('height', h).style("background", "#ffffff");
+    var listArray = averageDataSet.map(e=>parseFloat(e.price));
+    var maxPrice = d3.max(listArray);
+    var minPrice = d3.min(listArray);
+    var dateArray = averageDataSet.map(e=>parseInt(e.date));
+    var maxDate = d3.max(dateArray)
+    var minDate = d3.min(dateArray)
+    var scale_x = d3.scaleLinear().domain([minDate,maxDate]).range([20,w]);
+    var scale_y = d3.scaleLinear().domain([0.8*minPrice,1.2*maxPrice]).range([h-20,0]);
+
+    var line_generator = d3.line().x(function(d){return scale_x(d.date);}).y(function(d){return scale_y(d.price);}).curve(d3.curveBasis);//把曲线设置光滑
+
+    svg.append("g").append("path").attr("d", line_generator(averageDataSet)).attr('fill','none').attr('stroke','blue').attr('stroke-width','2');
+    svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
+    svg.append("g").attr("font-size","20").attr('transform', 'translate(20,0)').call(d3.axisLeft().scale(scale_y));
+
+}
+
+function drawOverView(overView) {
+
 }
