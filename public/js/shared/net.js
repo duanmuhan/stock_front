@@ -68,7 +68,10 @@ $(function () {
                     console.log("start to request /stock/overview")
                 },
                 success:function (result) {
-                    console.log(result)
+                    if (result.code != 200){
+                        alert("error:" + result.message);
+                    }
+                    drawOverView(result.data);
                 },
                 error:function(e){
                     console.log("function error")
@@ -208,5 +211,8 @@ function drawAverage(averageDataSet) {
 }
 
 function drawOverView(overView) {
+    $("#stockName").html(overView.stockName);
+    $("#stockPrice").html(overView.price);
+    $("#deal-amount").html(overView.dealAmount);
 
 }
