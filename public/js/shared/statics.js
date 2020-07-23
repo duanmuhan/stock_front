@@ -1,6 +1,7 @@
 $(function () {
     fetchPriceAndShare();
     fetchStockMarketValue();
+    fetchStockChangeValue();
 })
 
 function fetchPriceAndShare() {
@@ -28,7 +29,7 @@ function fetchPriceAndShare() {
 function fetchStockMarketValue(){
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8080/stock/market",
+        url:"http://127.0.0.1:8080/stock/market/hist",
         async: false,
         beforeSend:function(){
             console.log("start to request /stock/market")
@@ -37,6 +38,27 @@ function fetchStockMarketValue(){
             console.log(result.data)
             d3.select("#hist").remove()
             drawHistDiagram(result.data.valuePairList);
+        },
+        error:function(e){
+            console.log("function error")
+            console.log(e.status)
+            console.log(e.responseText)
+        }
+    })
+}
+
+function fetchStockChangeValue() {
+    $.ajax({
+        type:"GET",
+        url:"http://127.0.0.1:8080/stock/change/pie",
+        async: false,
+        beforeSend:function(){
+            console.log("start to request /stock/market")
+        },
+        success:function (result) {
+            console.log(result.data)
+            d3.select("#stockPieChart").remove()
+            drawPieChart(result.data.list);
         },
         error:function(e){
             console.log("function error")
@@ -156,6 +178,54 @@ function drawHistDiagram(data) {
     svg.append("g")
         .call(yAxis).attr("transform", `translate(${margin.left},0)`);
 
+}
+
+function drawPieChart(data){
+
+    var h = $("#histDiagram").height();
+    var w = $("#histDiagram").width();
+    var margin = {top: 20, right: 20, bottom: 20, left: 20};
+    var width = w - margin.right - margin.left;
+    var height = h-margin.top - margin.bottom;
+    var radius =  height / 2;
+
+    var color = d3.scaleOrdinal().domain(data.map(d => d.changeRate)).range(d3.quantize(t => d3.interpolateSpectral(t  + 0.1), data.length).reverse())
+    var arc = d3.arc().innerRadius(0).outerRadius(radius - 50)
+    var pie =  d3.pie().sort(null).value(d=>d.changeNum);
+    var svg = d3.select("#barChart").append('svg').attr("viewBox", [-width / 2, -height / 2, width, height]).attr("id","stockPieChart").style("background", "#ffffff");
+    svg.append("g")
+        .attr("stroke", "white")
+        .selectAll("path")
+        .data(pie(data))
+        .join("path")
+        .attr("fill", d => color(d.data.changeNum))
+        .attr("d", arc)
+        .append("title")
+        .text(d => `${d.data.changeRate}: ${d.data.changeNum.toLocaleString()}`);
+
+    svg.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 12)
+        .attr("text-anchor", "middle")
+        .selectAll("text")
+        .data(pie(data))
+        .join("text")
+        .attr("transform", d => `translate(${arcLabel.centroid(d)})`)
+        .call(text => text.append("tspan")
+            .attr("y", "-0.4em")
+            .attr("font-weight", "bold")
+            .text(d => d.data.name))
+        .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
+            .attr("x", 0)
+            .attr("y", "0.7em")
+            .attr("fill-opacity", 0.7)
+            .text(d => d.data.changeNum.toLocaleString()));
+
+}
+
+function arcLabel() {
+    const radius = Math.min(width, height) / 2 * 0.8;
+    return d3.arc().innerRadius(radius).outerRadius(radius);
 }
 
 function getColor(kItem) {
