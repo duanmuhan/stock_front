@@ -84,16 +84,18 @@
                   <div class="p-4 border-bottom bg-light">
                     <h4 class="card-title mb-0">股票价格-分红散点图</h4>
                   </div>
-                  <div id="mixed-chart" style="height: 600px; width: 1000px"></div>
+                  <div class="card-body">
+                    <div id="mixed-chart" style="height: 600px; width: 1000px"></div>
+                  </div>
                 </div>
               </div>
-              <div class="col-lg-6 grid-margin stretch-card">
+              <div class="col-lg-6 grid-margin stretch-card" >
                 <div class="card">
                   <div class="p-4 border-bottom bg-light">
                     <h4 class="card-title mb-0">股票市值直方图</h4>
                   </div>
                   <div class="card-body">
-                    <div id="histDiagram" style="height:500px"></div>
+                    <div id="histDiagram" style=" overflow-y:auto; overflow-x:auto; height: 500px"></div>
                   </div>
                 </div>
               </div>
@@ -103,7 +105,7 @@
                     <h4 class="card-title mb-0">股票价格直方图</h4>
                   </div>
                   <div class="card-body">
-                    <canvas id="areaChart" style="height:500px"></canvas>
+                    <div id="stockPriceHist" style="overflow-y:auto; overflow-x:auto; height:500px"></div>
                   </div>
                 </div>
               </div>
@@ -112,7 +114,9 @@
                   <div class="p-4 border-bottom bg-light">
                     <h4 class="card-title mb-0">上涨-下跌股票饼图</h4>
                   </div>
-                  <div id="barChart" style="height:500px"></div>
+                  <div class="card-body">
+                    <div id="barChart" style=" overflow-y:auto; overflow-x:auto;height:500px"></div>
+                  </div>
                 </div>
               </div>
               <div class="col-lg-6 grid-margin stretch-card">
@@ -120,7 +124,9 @@
                   <div class="p-4 border-bottom bg-light">
                     <h4 class="card-title mb-0">股东筹码集中度直方图</h4>
                   </div>
-                  <div id="stackedbarChart" style="height:250px"></div>
+                  <div class="card-body">
+                    <div id="stackedbarChart" style="height:500px"></div>
+                  </div>
                 </div>
               </div>
               <div class="col-lg-6 grid-margin stretch-card">
@@ -131,14 +137,6 @@
                   </div>
                   <div class="card-body">
                     <canvas class="mt-4" id="radarChart" style="height:250px"></canvas>
-                    <div class="d-flex mt-5 py-3 border-top">
-                      <p class="mb-0 font-weight-semibold"><span class="dot-indicator bg-success"></span> Student A </p>
-                      <p class="mb-0 ml-auto text-primary">56%</p>
-                    </div>
-                    <div class="d-flex pt-3 border-top">
-                      <p class="mb-0 font-weight-semibold"><span class="dot-indicator bg-success"></span> Student B</p>
-                      <p class="mb-0 ml-auto text-primary">34%</p>
-                    </div>
                   </div>
                 </div>
               </div>
