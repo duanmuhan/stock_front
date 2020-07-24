@@ -11,7 +11,7 @@ router.get('/statics', function(req, res, next) {
 });
 
 router.get('/forms', function(req, res, next) {
-  res.render('pages/forms/form_page', { title: '基本信息' });
+  res.render('pages/tables/basic-table', { title: '基本信息' });
 });
 
 router.get('/news', function(req, res, next) {
