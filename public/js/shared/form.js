@@ -39,7 +39,6 @@ function latestShareBonus(data){
             $trChild.append("<td>"+ platelist[j] +"</td>");
         }
         $trTemp.appendTo("#latestShareBonus");
-        $trChild.appendTo("#latestShareBonus");
 
     }
 }
