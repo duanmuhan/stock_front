@@ -328,7 +328,7 @@ function drawStockHolderConcentrate(data) {
     var yAxis = d3.axisLeft(yScale).ticks(null, data.format);
 
     svg.append("g")
-        .attr("fill", "LightGreen")
+        .attr("fill", "#952FFE")
         .selectAll("rect")
         .data(data)
         .join("rect")

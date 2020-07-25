@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css">
     <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="/vendors/css/vendor.bundle.addons.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -205,68 +207,32 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6 grid-margin stretch-card">
+              <div  class="col-lg-6 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">单位价格分红排名</h4>
-                    <table class="table table-hover">
+                    <table  class="table table-hover">
                       <thead>
                       <tr>
                         <th>股票id</th>
                         <th>股票名称</th>
+                        <th>当前价格</th>
                         <th>单位价格分红数量</th>
-                        <th>所属板块</th>
                         <th>更新日期</th>
                       </tr>
                       </thead>
-                      <tbody>
-                      <tr>
-                        <td>Jacob</td>
-                        <td>Photoshop</td>
-                        <td class="text-danger"> 28.76% <i class="mdi mdi-arrow-down"></i>
-                        </td>
-                        <td>
-                          <label class="badge badge-danger">Pending</label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Messsy</td>
-                        <td>Flash</td>
-                        <td class="text-danger"> 21.06% <i class="mdi mdi-arrow-down"></i>
-                        </td>
-                        <td>
-                          <label class="badge badge-warning">In progress</label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>John</td>
-                        <td>Premier</td>
-                        <td class="text-danger"> 35.00% <i class="mdi mdi-arrow-down"></i>
-                        </td>
-                        <td>
-                          <label class="badge badge-info">Fixed</label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Peter</td>
-                        <td>After effects</td>
-                        <td class="text-success"> 82.00% <i class="mdi mdi-arrow-up"></i>
-                        </td>
-                        <td>
-                          <label class="badge badge-success">Completed</label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Dave</td>
-                        <td>53275535</td>
-                        <td class="text-success"> 98.05% <i class="mdi mdi-arrow-up"></i>
-                        </td>
-                        <td>
-                          <label class="badge badge-warning">In progress</label>
-                        </td>
-                      </tr>
+                      <tbody id="latestShareBonus">
                       </tbody>
                     </table>
+                    <div class="container">
+                      <ul class="pagination pagination-sm"  style="float:right">
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -284,7 +250,7 @@
                         <th>更新日期</th>
                       </tr>
                       </thead>
-                      <tbody>
+                      <tbody id="">
                       <tr>
                         <td>Jacob</td>
                         <td>Photoshop</td>
@@ -674,16 +640,10 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="/vendors/js/vendor.bundle.base.js"></script>
-    <script src="/vendors/js/vendor.bundle.addons.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
-    <script src="/js/shared/off-canvas.js"></script>
-    <script src="/js/shared/misc.js"></script>
-    <!-- endinject -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/js/shared/form.js"></script>
     <!-- Custom js for this page-->
     <!-- End custom js for this page-->
   </body>
