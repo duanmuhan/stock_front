@@ -1,28 +1,38 @@
 $(function(){
+
+     render()
+
+})
+
+var pageSize = 20;
+var currentPage = 0;
+
+function render(){
             $.ajax({
                 type:"GET",
                 url:"http://127.0.0.1:8080/topValuePerPrice/form",
+                data:{
+                    pageNo : currentPage,
+                    pageSize : pageSize
+                },
                 async: false,
                 beforeSend:function(){
-                    console.log("start to request /stock/overview")
+                    console.log("start to request /topValuePerPrice/form")
                 },
                 success:function (result) {
                     if (result.code != 200){
                         alert("error:" + result.message);
                     }
-                    latestShareBonus(result.data);
+                    latestShareBonus(result.data.list);
+                    setPage(currentPage,Math.cell(result.size/pageSize),render);
                 },
                 error:function(e){
                     console.log("function error")
                 }
             });
-})
 
-function bindClickEvent(){
-    $(".parent").on('click',function(event){
-            var flag = $(this).attr("data-flag");
-     });
 }
+
 
 function latestShareBonus(data){
     for(i=0;i<data.length; i++){
@@ -41,4 +51,22 @@ function latestShareBonus(data){
         $trTemp.appendTo("#latestShareBonus");
 
     }
+}
+
+function setPage(currentPage,pageSum, callback){
+        $(".pagination").bootstrapPaginator({
+            //设置版本号
+            bootstrapMajorVersion: 4,
+            // 显示第几页
+            currentPage: currentPage,
+            // 总页数
+            totalPages: pageSum,
+            //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
+            onPageClicked: function (event,originalEvent,type,page) {
+                // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
+                currentPage = page
+                callback && callback()
+            }
+        })
+
 }
