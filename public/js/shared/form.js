@@ -24,7 +24,7 @@ function render(currentPage){
                         alert("error:" + result.message);
                     }
                     latestShareBonus(result.data.list);
-                    buildPagination(currentPage,200,render);
+                    $("#pagination").html(currentPage,200,render);
                 },
                 error:function(e){
                     console.log("function error")
@@ -61,10 +61,40 @@ function latestShareBonus(data){
           '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">下一页</a></li>';
  }
 
-function buildPagination(currentPage, totalPage,render){
+function buildPagination(currentPage, totalPage,funcName){
     currPage = Number(currPage);
     totalPage = Number(totalPage);
     let pageStr = '';
+    if (totalPage > 1) {
+       if (totalPage <= 10) {
+            pageStr += prePage(currPage, funcName);
+            pageStr += startNPage(currPage, totalPage, funcName);
+            pageStr += nextPage(currPage, totalPage, funcName);
+        } else if (totalPage > 10) {
+       if (currPage < 10) {
+            pageStr += prePage(currPage, funcName);
+            pageStr += startNPage(currPage, totalPage, funcName);
+            pageStr += lastPage(totalPage, funcName);
+            pageStr += nextPage(currPage, totalPage, funcName);
+        } else {
+        if (currPage <= (totalPage - 10)) {
+            pageStr += prePage(currPage, funcName);
+            pageStr += firstPage(funcName);
+            pageStr += plusAndMinusTwoPages(currPage, funcName);
+            pageStr += lastPage(totalPage, funcName);
+            pageStr += nextPage(currPage, totalPage, funcName);
+         } else {
+             pageStr += prePage(currPage, funcName);
+             pageStr += firstPage(funcName);
+             pageStr += endNPage(currPage, totalPage, funcName);
+             pageStr += nextPage(currPage, totalPage, funcName);
+        }
+     }
+    }
+ } else {
+        pageStr += initPage();
+    }
+        return pageStr;
 }
 
 
