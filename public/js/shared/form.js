@@ -4,10 +4,10 @@ $(function(){
 
 })
 
-var pageSize = 20;
-var currentPage = 0;
+var pageSize = 10;
+var currentStartPagePage = 1;
 
-function render(){
+function render(currentPage){
             $.ajax({
                 type:"GET",
                 url:"http://127.0.0.1:8080/topValuePerPrice/form",
@@ -24,7 +24,7 @@ function render(){
                         alert("error:" + result.message);
                     }
                     latestShareBonus(result.data.list);
-                    setPage(currentPage,Math.cell(result.size/pageSize),render);
+                    buildPagination(currentPage,200,render);
                 },
                 error:function(e){
                     console.log("function error")
@@ -35,6 +35,7 @@ function render(){
 
 
 function latestShareBonus(data){
+    $("#latestShareBonus").empty();
     for(i=0;i<data.length; i++){
         var $trTemp = $("<tr class='parent'></tr>");
         $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
@@ -53,20 +54,90 @@ function latestShareBonus(data){
     }
 }
 
-function setPage(currentPage,pageSum, callback){
-        $(".pagination").bootstrapPaginator({
-            //设置版本号
-            bootstrapMajorVersion: 4,
-            // 显示第几页
-            currentPage: currentPage,
-            // 总页数
-            totalPages: pageSum,
-            //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
-            onPageClicked: function (event,originalEvent,type,page) {
-                // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
-                currentPage = page
-                callback && callback()
-            }
-        })
+// 初始状态
+ function initPage() {
+     return '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">上一页</a></li>' +
+          '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">1</a></li>' +
+          '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">下一页</a></li>';
+ }
 
+function buildPagination(currentPage, totalPage,render){
+    currPage = Number(currPage);
+    totalPage = Number(totalPage);
+    let pageStr = '';
 }
+
+
+// 上一页
+ function prePage(currPage, funcName) {
+     let str = '';
+     if (currPage === 1) {
+        str += '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">上一页</a></li>';
+     } else {
+         str += '<li class="page-item"><a class="page-link" href="javascript: ' + funcName + '(\'pre\');">上一页</a></li>';
+ }
+    return str;
+ }
+
+function firstPage(funcName) {
+    return '<li class="page-item"><a class="page-link" href="javascript: ' + funcName + '(1);">1</a></li>' +
+         '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">...</a></li>';
+}
+
+function startNPage(currentPage,totalPage,funcName){
+    var str='', total;
+    if(totalPage >10){
+        total = 10;
+    }else{
+        total = totalPage;
+    }
+    for (i=1; i< total +1; i++){
+         if (i === currPage) {
+                    str += '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">' + i + '</a></li>';
+                } else {
+                     str += '<li class="page-item"><a class="page-link" href="javascript: ' + funcName + '(' + i + ');">' + i + '</a></li>';
+                }
+    }
+    return str;
+}
+
+function plusAndMinusTwoPages(currPage, funcName) {
+   let str = '', start = currPage - 2, end = currPage + 3;
+       for (let i = start; i < end; i++) {
+                if (i === currPage) {
+                             str += '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">' + i + '</a></li>';
+                 } else {
+                             str += '<li class="page-item"><a class="page-link" href="javascript: ' + funcName + '(' + i + ');">' + i + '</a></li>';
+                }
+        }
+       return str;
+}
+
+function endNPage(currPage, totalPage, funcName) {
+     let str = '', start = totalPage - 5 + 1, end = totalPage + 1;
+     for (let i = start; i < end; i++) {
+         if (i === currPage) {
+             str += '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">' + i + '</a></li>';
+         } else {
+             str += '<li class="page-item"><a class="page-link" href="javascript: ' + funcName + '(' + i + ');">' + i + '</a></li>';
+         }
+     }
+     return str;
+}
+
+function lastPage(totalPage, funcName) {
+    return '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">...</a></li>' +
+         '<li class="page-item"><a class="page-link" href="javascript: ' + funcName + '(' + totalPage + ');">' + totalPage + '</a></li>';
+}
+
+// 下一页
+function nextPage(currPage, totalPage, funcName) {
+     let str = '';
+     if (currPage === totalPage) {
+         str += '<li class="page-item disabled"><a class="page-link" href="javascript: void(0);">下一页</a></li>';
+     } else {
+         str += '<li class="page-item"><a class="page-link" href="javascript: ' + funcName + '(\'next\');">下一页</a></li>';
+     }
+     return str;
+}
+
