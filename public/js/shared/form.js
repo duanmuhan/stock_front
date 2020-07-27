@@ -1,6 +1,7 @@
 $(function(){
 
-     render(currentStartPagePage)
+     render(currentStartPagePage);
+     renderHighestIncreaseShare(currentStartPagePage);
 
 })
 var pageSize = 10;
@@ -31,6 +32,31 @@ function render(currentPage){
 
 }
 
+function renderHighestIncreaseShare(currentPage){
+                $.ajax({
+                    type:"GET",
+                    url:"http://127.0.0.1:8080/stock/increase/rank",
+                    data:{
+                        pageNo : currentPage,
+                        pageSize : pageSize
+                    },
+                    async: false,
+                    beforeSend:function(){
+                        console.log("start to request /stock/increase/rank")
+                    },
+                    success:function (result) {
+                        if (result.code != 200){
+                            alert("error:" + result.message);
+                        }
+                        highestIncreaseShare(result.data);
+                        $("#stockIncrease-pagination").html(buildPagination(currentPage,200,render));
+                    },
+                    error:function(e){
+                        console.log("function error:{}",e)
+                    }
+                });
+}
+
 
 function latestShareBonus(data){
     $("#latestShareBonus").empty();
@@ -38,7 +64,7 @@ function latestShareBonus(data){
         var $trTemp = $("<tr class='parent'></tr>");
         $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
         $trTemp.append("<td>"+ data[i].stockName +"</td>");
-        $trTemp.append("<td>"+ data[i].price +"</td>");
+        $trTemp.append("<td>"+ data[i].changeRate +"</td>");
         $trTemp.append("<td>"+ data[i].earningsPerPrice +"</td>");
         $trTemp.append("<td>"+ data[i].date +"</td>");
         $trTemp.appendTo("#latestShareBonus");
@@ -53,8 +79,9 @@ function highestIncreaseShare(data){
        $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
        $trTemp.append("<td>"+ data[i].stockName +"</td>");
        $trTemp.append("<td>"+ data[i].price +"</td>");
-       $trTemp.append("<td>"+ data[i].earningsPerPrice +"</td>");
+       $trTemp.append("<td>"+ data[i].changeRate*100 + "%" +"</td>");
        $trTemp.append("<td>"+ data[i].date +"</td>");
+       $trTemp.appendTo("#highestStockIncrease");
     }
 }
 
