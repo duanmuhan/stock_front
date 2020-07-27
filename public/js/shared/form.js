@@ -41,14 +41,20 @@ function latestShareBonus(data){
         $trTemp.append("<td>"+ data[i].price +"</td>");
         $trTemp.append("<td>"+ data[i].earningsPerPrice +"</td>");
         $trTemp.append("<td>"+ data[i].date +"</td>");
-
-        var $trChild = $("<tr class='click1'>"+ "所属板块" +"</tr>");
-        var platelist = data[i].plate.split(";");
-        for(j=0; j<platelist.length; j++){
-            $trChild.append("<td>"+ platelist[j] +"</td>");
-        }
         $trTemp.appendTo("#latestShareBonus");
 
+    }
+}
+
+function highestIncreaseShare(data){
+    $("#highestStockIncrease").empty();
+    for(i=0; i<data.length; i++){
+       var $trTemp = $("<tr class='parent'></tr>");
+       $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
+       $trTemp.append("<td>"+ data[i].stockName +"</td>");
+       $trTemp.append("<td>"+ data[i].price +"</td>");
+       $trTemp.append("<td>"+ data[i].earningsPerPrice +"</td>");
+       $trTemp.append("<td>"+ data[i].date +"</td>");
     }
 }
 
