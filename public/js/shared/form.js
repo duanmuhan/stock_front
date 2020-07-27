@@ -1,12 +1,10 @@
 $(function(){
 
-     render()
+     render(currentStartPagePage)
 
 })
-
 var pageSize = 10;
 var currentStartPagePage = 1;
-
 function render(currentPage){
             $.ajax({
                 type:"GET",
@@ -24,10 +22,10 @@ function render(currentPage){
                         alert("error:" + result.message);
                     }
                     latestShareBonus(result.data.list);
-                    $("#pagination").html(currentPage,200,render);
+                    $("#pagination").html(buildPagination(currentPage,200,render));
                 },
                 error:function(e){
-                    console.log("function error")
+                    console.log("function error:{}",e)
                 }
             });
 
@@ -62,7 +60,7 @@ function latestShareBonus(data){
  }
 
 function buildPagination(currentPage, totalPage,funcName){
-    currPage = Number(currPage);
+    currPage = Number(currentPage);
     totalPage = Number(totalPage);
     let pageStr = '';
     if (totalPage > 1) {
