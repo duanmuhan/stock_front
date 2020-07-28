@@ -2,7 +2,7 @@ $(function(){
 
      render(currentStartPagePage);
      renderHighestIncreaseShare(currentStartPagePage);
-
+     renderHighestPeriodIncreaseShare(currentStartPagePage);
 })
 var pageSize = 10;
 var currentStartPagePage = 1;
@@ -57,6 +57,31 @@ function renderHighestIncreaseShare(currentPage){
                 });
 }
 
+function renderHighestPeriodIncreaseShare(currentPage){
+                $.ajax({
+                    type:"GET",
+                    url:"http://127.0.0.1:8080/stock/rate/rank",
+                    data:{
+                        pageNo : currentPage,
+                        pageSize : pageSize
+                    },
+                    async: false,
+                    beforeSend:function(){
+                        console.log("start to request /stock/rate/rank")
+                    },
+                    success:function (result) {
+                        if (result.code != 200){
+                            alert("error:" + result.message);
+                        }
+                        highestPeriodIncreaseShare(result.data);
+                        $("#stock-period-Increase-pagination").html(buildPagination(currentPage,200,render));
+                    },
+                    error:function(e){
+                        console.log("function error:{}",e)
+                    }
+                });
+}
+
 
 function latestShareBonus(data){
     $("#latestShareBonus").empty();
@@ -82,6 +107,20 @@ function highestIncreaseShare(data){
        $trTemp.append("<td>"+ data[i].changeRate*100 + "%" +"</td>");
        $trTemp.append("<td>"+ data[i].date +"</td>");
        $trTemp.appendTo("#highestStockIncrease");
+    }
+}
+
+function highestPeriodIncreaseShare(data){
+    $("#highesePeriodIncreaseShare").empty();
+    for(i=0; i<data.length; i++){
+       var $trTemp = $("<tr class='parent'></tr>");
+       $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
+       $trTemp.append("<td>"+ data[i].stockName +"</td>");
+       $trTemp.append("<td>"+ data[i].price +"</td>");
+       $trTemp.append("<td>"+ data[i].changeRate +"</td>");
+       $trTemp.append("<td>"+ data[i].toDate +"</td>");
+       $trTemp.append("<td>"+ data[i].fromDate +"</td>");
+       $trTemp.appendTo("#highesePeriodIncreaseShare");
     }
 }
 
