@@ -34,14 +34,47 @@ function drawNews(data){
         var platform = data[i].platform;
         var releaseDate = data[i].releaseDate;
         var source = data[i].source;
-        var str = "<div class=\"card-body\">" +"<h4>" + title + "<small class=\"text-muted\"> 发布时间：" +　releaseDate + "</small></h4>" +
-            "<p class='card-description'>" + "命中板块：" + "</p>" +
+
+        var plateStr = "";
+        for (j=0;j<data[i].platePairList.length; j++){
+            plateStr = plateStr + "<label id="+ data[i].platePairList[j].key + " class='badge badge-danger'>" + data[i].platePairList[j].value + "</label>"
+        }
+
+        var platformStr = "<a href = " + source + ">" + platform + "</a>";
+
+        var str = "<div class=\"card-body\">" +"<h4 >" + title + "<small class=\"text-muted\"> 发布时间：" +　releaseDate + "</small></h4>" +
+            "<p class='card-title text-primary'>" + "命中板块：" +  plateStr + "</p>"  +
+            "<p class='card-title text-info'>" + "信息来源：" + platformStr  + "</p>"+
             "</div>"
 
         innerHTML = innerHTML + str;
     }
     var articleDiv = document.getElementById("articleDiv");
     articleDiv.innerHTML = innerHTML;
+
+}
+
+function displayStockItems(id) {
+    $.ajax({
+        type:"GET",
+        url:"http://127.0.0.1:8080/stock/news/list?" + "releaseDate=" + releaseDate,
+        async: false,
+        beforeSend:function(){
+            console.log("start to request /stock/news/list")
+        },
+        success:function (result) {
+            if (result.code != 200){
+                alert("error:" + result.message);
+            }
+            drawNews(result.data);
+        },
+        error:function(e){
+            console.log("function error")
+        }
+    });
+}
+
+function f() {
 
 }
 
