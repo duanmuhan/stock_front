@@ -37,7 +37,7 @@ function drawNews(data){
 
         var plateStr = "";
         for (j=0;j<data[i].platePairList.length; j++){
-            plateStr = plateStr + "<label id="+ data[i].platePairList[j].key + " class='badge badge-danger'>" + data[i].platePairList[j].value + "</label>"
+            plateStr = plateStr + "<label id="+ data[i].platePairList[j].key + " class='badge badge-danger'" + " onclick=displayStockItems(this) " + ">" + data[i].platePairList[j].value + "</label>"
         }
 
         var platformStr = "<a href = " + source + ">" + platform + "</a>";
@@ -54,19 +54,20 @@ function drawNews(data){
 
 }
 
-function displayStockItems(id) {
+function displayStockItems(element) {
+    var plateId=element.id;
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8080/stock/news/list?" + "releaseDate=" + releaseDate,
+        url:"http://127.0.0.1:8080/plate/stock/list?" + "plateId=" + plateId,
         async: false,
         beforeSend:function(){
-            console.log("start to request /stock/news/list")
+            console.log("start to request /plate/stock/list")
         },
         success:function (result) {
             if (result.code != 200){
                 alert("error:" + result.message);
             }
-            drawNews(result.data);
+            drawStockItemsDisplayPanel(result.data,element);
         },
         error:function(e){
             console.log("function error")
@@ -74,7 +75,28 @@ function displayStockItems(id) {
     });
 }
 
-function f() {
+function drawStockItemsDisplayPanel(data,object) {
+    var x = object.offsetTop;
+    var y = object.offsetLeft;
+    $("#stock-panel").css("position", "absolute");
+    $("#stock-panel").css("top", x-100);
+    $("#stock-panel").css("left", y+400);
+    $("#stock-panel-tbody").empty();
+    for(i=0;i<data.length; i++){
+        var $trTemp = $("<tr class='parent'></tr>");
+        $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
+        $trTemp.append("<td>"+ data[i].stockName +"</td>");
+        $trTemp.append("<td>"+ data[i].price +"</td>");
+        $trTemp.append("<td>"+ data[i].dealAmount +"</td>");
+        $trTemp.append("<td>"+ data[i].date +"</td>");
+        $trTemp.appendTo("#stock-panel-tbody");
+
+    }
+    $("#stock-panel").fadeIn("100");
+
+}
+
+function getStockPanelDraggable() {
 
 }
 
