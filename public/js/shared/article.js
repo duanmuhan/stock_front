@@ -1,5 +1,6 @@
 $(function(){
-    fetchArticle()
+    getStockPanelDraggable();
+    fetchArticle();
 })
 
 function fetchArticle() {
@@ -79,7 +80,7 @@ function drawStockItemsDisplayPanel(data,object) {
     var x = object.offsetTop;
     var y = object.offsetLeft;
     $("#stock-panel").css("position", "absolute");
-    $("#stock-panel").css("top", x-100);
+    $("#stock-panel").css("top", x);
     $("#stock-panel").css("left", y+400);
     $("#stock-panel-tbody").empty();
     for(i=0;i<data.length; i++){
@@ -97,7 +98,37 @@ function drawStockItemsDisplayPanel(data,object) {
 }
 
 function getStockPanelDraggable() {
+        $("#stock-panel").mousedown(function (e) {
 
+            $(document).mousemove(function (e) {
+                var x = e.pageX;
+                var y = e.pageY;
+
+                if (x < 0) {
+                    x = 0;
+                } else if (x > $(document).width() - $('#stock-panel').outerWidth(true)) {
+                    x = $(document).width() - $('#stock-panel').outerWidth(true);
+                }
+
+                if (y < 0) {
+                    y = 0;
+                } else if (y > $(document).height() - $('#stock-panel').outerHeight(true)) {
+                    y = $(document).height() - $('#stock-panel').outerHeight(true);
+                }
+
+                $("#stock-panel").css({
+                    'left': x + 'px',
+                    'top': y + 'px'
+                });
+            });
+            $(document).mouseup(function() {
+                $(document).off('mousemove');
+            });
+        });
+}
+
+function turnoff() {
+    $("#stock-panel").fadeOut("100");
 }
 
 function getBeforeDate(days) {
