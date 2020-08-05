@@ -4,6 +4,7 @@ $(function () {
     fetchStockChangeValue();
     fetchStockPriceHistValue();
     fetchStockHolderConcentrate();
+    fetchStockHolderAchievement();
 })
 
 function fetchPriceAndShare() {
@@ -103,6 +104,26 @@ function fetchStockHolderConcentrate() {
             console.log(result.data)
             d3.select("#stockHolderConcentrateHist").remove()
             drawStockHolderConcentrate(result.data.list);
+        },
+        error:function(e){
+            console.log("function error")
+            console.log(e.status)
+            console.log(e.responseText)
+        }
+    })
+}
+
+function fetchStockHolderAchievement() {
+    $.ajax({
+        type:"GET",
+        url:"http://127.0.0.1:8080/stock/achievement/group",
+        async: false,
+        beforeSend:function(){
+            console.log("start to request /stock/achievement/group")
+        },
+        success:function (result) {
+            d3.select("#stockAchievementHistGraph").remove()
+            drawStockAchievementHist(result.data.list);
         },
         error:function(e){
             console.log("function error")
@@ -221,6 +242,8 @@ function drawHistDiagram(data) {
 
     svg.append("g")
         .call(yAxis).attr("transform", `translate(${margin.left},0)`);
+    svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
+    svg.append("g").attr("font-size","20").attr('transform', 'translate(30,0)').call(d3.axisLeft().scale(scale_y));
 
 }
 
@@ -350,6 +373,50 @@ function drawStockHolderConcentrate(data) {
 
     svg.append("g")
         .call(yAxis).attr("transform", `translate(${margin.left},0)`);
+}
+
+function drawStockAchievementHist(data) {
+    var margin = ({top: 30, right: 0, bottom: 30, left: 40})
+    var h = $("#stockAchievementHist").height();
+    var w = $("#stockAchievementHist").width();
+    var svg = d3.select("#stockAchievementHist").append('svg').attr('width', w).attr('height', h).attr("id","stockAchievementHistGraph").style("background", "#ffffff");
+    var xScale = d3.scaleBand()
+        .domain(d3.range(data.length))
+        .range([margin.left, w - margin.right])
+        .padding(0.1);
+
+    var yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.value)]).nice()
+        .range([h - margin.bottom, margin.top]);
+
+    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].key).tickSizeOuter(0);
+    var yAxis = d3.axisLeft(yScale).ticks(null, data.format);
+
+    svg.append("g")
+        .attr("fill", "#952ffe")
+        .selectAll("rect")
+        .data(data)
+        .join("rect")
+        .attr("x", (d, i) => xScale(i))
+        .attr("y", d => yScale(d.value))
+        .attr("height", d => yScale(0) - yScale(d.value))
+        .attr("width", xScale.bandwidth());
+
+    svg.append("g").selectAll("text")
+        .data(data)
+        .attr("font-size", 12)
+        .join("text")
+        .attr("text-anchor", "begin")
+        .attr("x", (d,i) => xScale(i) + xScale.bandwidth() / 3)
+        .attr("y", d => yScale(d.value))
+        .text(d => d.value);
+
+    svg.append("g")
+        .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`);
+
+    svg.append("g")
+        .call(yAxis).attr("transform", `translate(${margin.left},0)`);
+
 }
 
 function bindDraggableDiv() {
