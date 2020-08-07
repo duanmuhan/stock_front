@@ -3,6 +3,7 @@ $(function(){
      render(currentStartPagePage);
      renderHighestIncreaseShare(currentStartPagePage);
      renderHighestPeriodIncreaseShare(currentStartPagePage);
+     renderStockAchievement(currentStartPagePage);
 })
 var pageSize = 10;
 var currentStartPagePage = 1;
@@ -82,6 +83,31 @@ function renderHighestPeriodIncreaseShare(currentPage){
                 });
 }
 
+function renderStockAchievement(currentPage){
+                    $.ajax({
+                        type:"GET",
+                        url:"http://127.0.0.1:8080/stock/achievement/list",
+                        data:{
+                            pageNo : currentPage,
+                            pageSize : pageSize
+                        },
+                        async: false,
+                        beforeSend:function(){
+                            console.log("start to request /stock/achievement/list")
+                        },
+                        success:function (result) {
+                            if (result.code != 200){
+                                alert("error:" + result.message);
+                            }
+                            stockAchievement(result.data);
+                            $("#ststock-achievement-Increase-pagination").html(buildPagination(currentPage,200,render));
+                        },
+                        error:function(e){
+                            console.log("function error:{}",e)
+                        }
+                    });
+}
+
 
 function latestShareBonus(data){
     $("#latestShareBonus").empty();
@@ -122,6 +148,21 @@ function highestPeriodIncreaseShare(data){
        $trTemp.append("<td>"+ data[i].fromDate +"</td>");
        $trTemp.appendTo("#highesePeriodIncreaseShare");
     }
+}
+
+function stockAchievement(data){
+    $("#stockAchievement").empty();
+    for(i=0; i<data.length; i++){
+           var $trTemp = $("<tr class='parent'></tr>");
+           $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
+           $trTemp.append("<td>"+ data[i].stockName +"</td>");
+           $trTemp.append("<td>"+ data[i].achievementType +"</td>");
+           $trTemp.append("<td>"+ data[i].achievementTitle +"</td>");
+           $trTemp.append("<td>"+ data[i].profileChangeRate +"</td>");
+           $trTemp.append("<td>"+ data[i].profileLastYear +"</td>");
+           $trTemp.append("<td>"+ data[i].releaseDate +"</td>");
+           $trTemp.appendTo("#stockAchievement");
+     }
 }
 
 // 初始状态
