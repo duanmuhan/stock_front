@@ -135,6 +135,31 @@ function renderStockScore(currentPage){
 
 }
 
+function renderStockTechnology(currentPage){
+                $.ajax({
+                    type:"GET",
+                    url:"http://127.0.0.1:8080/stock/technology",
+                    data:{
+                        pageNo : currentPage,
+                        pageSize : pageSize
+                    },
+                    async: false,
+                    beforeSend:function(){
+                        console.log("start to request /stock/technology")
+                    },
+                    success:function (result) {
+                        if (result.code != 200){
+                            alert("error:" + result.message);
+                        }
+                        stockTechnology(result.data);
+                        $("#stockScore-ul-pagination").html(buildPagination(currentPage,200,renderHighestPeriodIncreaseShare));
+                    },
+                    error:function(e){
+                        console.log("function error:{}",e)
+                    }
+                });
+}
+
 
 function latestShareBonus(data){
     $("#latestShareBonus").empty();
@@ -202,6 +227,18 @@ function stockScore(data){
            $trTemp.append("<td>"+ data[i].score +"</td>");
            $trTemp.append("<td>"+ data[i].releaseDate +"</td>");
            $trTemp.appendTo("#stockScore");
+        }
+}
+
+function stockTechnology(data){
+    $("#stockTechnologyForm").empty();
+        for(i=0; i<data.length; i++){
+           var $trTemp = $("<tr class='parent'></tr>");
+           $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
+           $trTemp.append("<td>"+ data[i].stockName +"</td>");
+           $trTemp.append("<td>"+ data[i].buy +"</td>");
+           $trTemp.append("<td>"+ data[i].releaseDate +"</td>");
+           $trTemp.appendTo("#stockTechnologyForm");
         }
 }
 
