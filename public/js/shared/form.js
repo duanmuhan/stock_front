@@ -50,7 +50,7 @@ function renderHighestIncreaseShare(currentPage){
                             alert("error:" + result.message);
                         }
                         highestIncreaseShare(result.data);
-                        $("#stockIncrease-pagination").html(buildPagination(currentPage,200,render));
+                        $("#stockIncrease-pagination").html(buildPagination(currentPage,200,renderHighestIncreaseShare));
                     },
                     error:function(e){
                         console.log("function error:{}",e)
@@ -75,7 +75,7 @@ function renderHighestPeriodIncreaseShare(currentPage){
                             alert("error:" + result.message);
                         }
                         highestPeriodIncreaseShare(result.data);
-                        $("#stock-period-Increase-pagination").html(buildPagination(currentPage,200,render));
+                        $("#stock-period-Increase-pagination").html(buildPagination(currentPage,200,renderHighestPeriodIncreaseShare));
                     },
                     error:function(e){
                         console.log("function error:{}",e)
@@ -100,7 +100,7 @@ function renderStockAchievement(currentPage){
                                 alert("error:" + result.message);
                             }
                             stockAchievement(result.data);
-                            $("#ststock-achievement-Increase-pagination").html(buildPagination(currentPage,200,render));
+                            $("#ststock-achievement-Increase-pagination").html(buildPagination(currentPage,200,renderStockAchievement));
                         },
                         error:function(e){
                             console.log("function error:{}",e)
@@ -154,6 +154,7 @@ function stockAchievement(data){
     $("#stockAchievement").empty();
     for(i=0; i<data.length; i++){
            var $trTemp = $("<tr class='parent'></tr>");
+           $trTemp.append("<td>"+ i +"</td>");
            $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
            $trTemp.append("<td>"+ data[i].stockName +"</td>");
            $trTemp.append("<td>"+ data[i].achievementType +"</td>");
