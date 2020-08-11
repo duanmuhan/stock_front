@@ -4,6 +4,7 @@ $(function(){
      renderHighestIncreaseShare(currentStartPagePage);
      renderHighestPeriodIncreaseShare(currentStartPagePage);
      renderStockAchievement(currentStartPagePage);
+     renderStockScore(currentStartPagePage);
 })
 var pageSize = 10;
 var currentStartPagePage = 1;
@@ -108,6 +109,32 @@ function renderStockAchievement(currentPage){
                     });
 }
 
+function renderStockScore(currentPage){
+                $.ajax({
+                    type:"GET",
+                    url:"http://127.0.0.1:8080/stock/technology/score",
+                    data:{
+                        pageNo : currentPage,
+                        pageSize : pageSize
+                    },
+                    async: false,
+                    beforeSend:function(){
+                        console.log("start to request /stock/technology/score")
+                    },
+                    success:function (result) {
+                        if (result.code != 200){
+                            alert("error:" + result.message);
+                        }
+                        stockScore(result.data);
+                        $("#stockScore-ul-pagination").html(buildPagination(currentPage,200,renderHighestPeriodIncreaseShare));
+                    },
+                    error:function(e){
+                        console.log("function error:{}",e)
+                    }
+                });
+
+}
+
 
 function latestShareBonus(data){
     $("#latestShareBonus").empty();
@@ -164,6 +191,18 @@ function stockAchievement(data){
            $trTemp.append("<td>"+ data[i].releaseDate +"</td>");
            $trTemp.appendTo("#stockAchievement");
      }
+}
+
+function stockScore(data){
+    $("#stockScore").empty();
+        for(i=0; i<data.length; i++){
+           var $trTemp = $("<tr class='parent'></tr>");
+           $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
+           $trTemp.append("<td>"+ data[i].stockName +"</td>");
+           $trTemp.append("<td>"+ data[i].score +"</td>");
+           $trTemp.append("<td>"+ data[i].releaseDate +"</td>");
+           $trTemp.appendTo("#stockScore");
+        }
 }
 
 // 初始状态
