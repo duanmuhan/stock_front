@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/vendors/css/vendor.bundle.addons.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <linkrel="stylesheet"href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -86,23 +87,8 @@
                 <div class="card">
                   <div class="card-body">
                     <h3>最高涨幅</h3>
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th>股票id</th>
-                          <th>股票名称</th>
-                          <th>股票价格</th>
-                          <th>股票涨幅</th>
-                          <th>更新日期</th>
-                        </tr>
-                      </thead>
-                      <tbody id="highestStockIncrease">
-                      </tbody>
+                    <table id="highestIncreaseTable" class="table">
                     </table>
-                    <div id="stock-Increase-pagination" style="float:right">
-                      <ul id="stockIncrease-pagination" class="pagination pagination-sm">
-                      </ul>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -110,19 +96,7 @@
                 <div class="card">
                   <div class="card-body">
                     <h3>最近涨幅</h3>
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>股票id	</th>
-                          <th>股票名称</th>
-                          <th>股票价格</th>
-                          <th>股票涨幅</th>
-                          <th>起始日期</th>
-                          <th>终止日期</th>
-                        </tr>
-                      </thead>
-                      <tbody id="highesePeriodIncreaseShare">
-                      </tbody>
+                    <table id="highestPeriodIncreaseShare" class="table table-hover">
                     </table>
                     <div style="float:right">
                       <ul id="stock-period-Increase-pagination" class="pagination pagination-sm">
@@ -135,23 +109,8 @@
                 <div class="card">
                   <div class="card-body">
                     <h3>单位价格分红排名</h3>
-                    <table  class="table table-hover">
-                      <thead>
-                      <tr>
-                        <th>股票id</th>
-                        <th>股票名称</th>
-                        <th>当前价格</th>
-                        <th>单位价格分红数量</th>
-                        <th>更新日期</th>
-                      </tr>
-                      </thead>
-                      <tbody id="latestShareBonus">
-                      </tbody>
+                    <table id="latestShareBonus" class="table table-hover">
                     </table>
-                    <div id="stockValue-pagination" style="float:right">
-                      <ul id="pagination" class="pagination pagination-sm">
-                      </ul>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -253,7 +212,8 @@
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/pagination/bootstrap-paginator.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
     <script src="/js/shared/form.js"></script>
     <!-- Custom js for this page-->
     <!-- End custom js for this page-->
