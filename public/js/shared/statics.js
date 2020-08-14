@@ -242,8 +242,6 @@ function drawHistDiagram(data) {
 
     svg.append("g")
         .call(yAxis).attr("transform", `translate(${margin.left},0)`);
-    svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
-    svg.append("g").attr("font-size","20").attr('transform', 'translate(30,0)').call(d3.axisLeft().scale(scale_y));
 
 }
 
@@ -400,7 +398,10 @@ function drawStockAchievementHist(data) {
         .attr("x", (d, i) => xScale(i))
         .attr("y", d => yScale(d.value))
         .attr("height", d => yScale(0) - yScale(d.value))
-        .attr("width", xScale.bandwidth());
+        .attr("width", xScale.bandwidth())
+        .on("click",function (d,i) {
+            alert(d.key);
+        });
 
     svg.append("g").selectAll("text")
         .data(data)
@@ -416,6 +417,10 @@ function drawStockAchievementHist(data) {
 
     svg.append("g")
         .call(yAxis).attr("transform", `translate(${margin.left},0)`);
+
+}
+
+function fetchStockAchievementDetail(data) {
 
 }
 
