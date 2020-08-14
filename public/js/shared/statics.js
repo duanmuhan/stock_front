@@ -400,7 +400,7 @@ function drawStockAchievementHist(data) {
         .attr("height", d => yScale(0) - yScale(d.value))
         .attr("width", xScale.bandwidth())
         .on("click",function (d,i) {
-            fetchStockAchievementDetailByData(d.key);
+            fetchStockAchievementDetailByData(d.key,this);
         });
 
     svg.append("g").selectAll("text")
@@ -420,7 +420,15 @@ function drawStockAchievementHist(data) {
 
 }
 
-function fetchStockAchievementDetailByData(data) {
+function fetchStockAchievementDetailByData(data,object) {
+    console.log(data)
+    var x = object.offsetTop;
+    var y = object.offsetLeft;
+    console.log(object)
+    $("#stock-panel").css("position", "absolute");
+    $("#stock-panel").css("top", x);
+    $("#stock-panel").css("left", y+400);
+    $('#stock-panel-tbody').empty();
     $('#stock-panel-tbody').bootstrapTable({
         url: "http://127.0.0.1:8080/stock/achievement/type/list",
         toolbar: '#toolbar',
@@ -449,8 +457,8 @@ function fetchStockAchievementDetailByData(data) {
         cardView: false,                    //是否显示详细视图
         detailView: false,                 //是否显示父子表
         onLoadSuccess: function(data){
-            console.log(data.data);
             $('#stock-panel-tbody').bootstrapTable('load', data.data);
+            $('#stock-panel').fadeIn(100);
         },
         columns: [{
             field:'stockId',
@@ -484,6 +492,10 @@ function bindDraggableDiv() {
 
 function drawTargetForm(data) {
 
+}
+
+function turnoff() {
+    $("#stock-panel").fadeOut("100");
 }
 
 function arcLabel() {
