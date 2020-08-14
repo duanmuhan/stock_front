@@ -190,12 +190,25 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
+
+    <div id="stock-panel" class="col-lg-6 grid-margin stretch-card" style="display: none;">
+      <div class="card">
+        <div onclick="turnoff()" style="float:right">X</div>
+        <div class="card-body">
+          <h3>股票列表</h3>
+          <table id="stock-panel-tbody" class="table table-hover">
+          </table>
+        </div>
+      </div>
+    </div>
     <!-- endinject -->
     <!-- Plugin js for this page-->
     <!-- End plugin js for this page-->
     <!-- inject:js -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
     <script src="/js/shared/statics.js"></script>
   </body>
 </html>
