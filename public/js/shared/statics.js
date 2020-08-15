@@ -399,7 +399,7 @@ function drawStockAchievementHist(data) {
         .attr("y", d => yScale(d.value))
         .attr("height", d => yScale(0) - yScale(d.value))
         .attr("width", xScale.bandwidth())
-        .on("click",function (d,i) {
+        .on("mousedown",function (d,i) {
             fetchStockAchievementDetailByData(d.key,this);
         });
 
@@ -421,69 +421,14 @@ function drawStockAchievementHist(data) {
 }
 
 function fetchStockAchievementDetailByData(data,object) {
-    console.log(data)
-    var x = object.offsetTop;
-    var y = object.offsetLeft;
+    var x = d3.event.clientX;
+    var y = d3.event.clientY;
     console.log(object)
     $("#stock-panel").css("position", "absolute");
     $("#stock-panel").css("top", x);
-    $("#stock-panel").css("left", y+400);
+    $("#stock-panel").css("left", y+1200);
     $('#stock-panel-tbody').empty();
-    $('#stock-panel-tbody').bootstrapTable({
-        url: "http://127.0.0.1:8080/stock/achievement/type/list",
-        toolbar: '#toolbar',
-        striped: true,                      //是否显示行间隔色
-        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-        pagination : true,                   //是否显示分页（*）
-        sortable: false,                     //是否启用排序                 //排序方式
-        queryParams: function(params){
-            return {
-                pageSize: params.limit,
-                pageNo: params.offset/params.limit,
-                type:data
-            }
-        },         //传递参数（*）
-        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-        pageNumber:1,                       //初始化加载第一页，默认第一页
-        pageSize: 20,                       //每页的记录行数（*）
-        pageList: [20, 50, 100],        //可供选择的每页的行数（*）
-        smartDisplay:false,
-        undefinedText: '---',
-        showColumns: false,                 //是否显示所有的列
-        showRefresh: false,                 //是否显示刷新按钮
-        minimumCountColumns: 1,             //最少允许的列数
-        clickToSelect: true,                //是否启用点击选中行
-        showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
-        cardView: false,                    //是否显示详细视图
-        detailView: false,                 //是否显示父子表
-        onLoadSuccess: function(data){
-            $('#stock-panel-tbody').bootstrapTable('load', data.data);
-            $('#stock-panel').fadeIn(100);
-        },
-        columns: [{
-            field:'stockId',
-            title:'股票id',
-        },{
-            field:'stockName',
-            title:'股票名称',
-        },{
-            field:'achievementType',
-            title:'业绩预告类型',
-        },{
-            field:'achievementTitle',
-            title:'业绩预告摘要',
-        },{
-            field:'profileChangeRate',
-            title:'净利润变动幅度',
-        },{
-            field:'profileLastYear',
-            title:'上年同期净利润',
-        },{
-            field:'releaseDate',
-            title:'公告日期',
-        }
-        ],
-    });
+    $('#stock-panel').fadeIn(100);
 }
 
 function bindDraggableDiv() {
