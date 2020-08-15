@@ -1,4 +1,5 @@
 $(function () {
+    getStockPanelDraggable();
     fetchPriceAndShare();
     fetchStockMarketValue();
     fetchStockChangeValue();
@@ -425,14 +426,96 @@ function fetchStockAchievementDetailByData(data,object) {
     var y = d3.event.clientY;
     console.log(object)
     $("#stock-panel").css("position", "absolute");
-    $("#stock-panel").css("top", x);
-    $("#stock-panel").css("left", y+1200);
-    $('#stock-panel-tbody').empty();
+    $("#stock-panel").css("top", x+1200);
+    $("#stock-panel").css("left", y+800);
+    $('#stock-panel-tbody').bootstrapTable('destroy');
+    $('#stock-panel-tbody').bootstrapTable({
+        url: "http://127.0.0.1:8080/stock/achievement/type/list",
+        toolbar: '#toolbar',
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination : true,                   //是否显示分页（*）
+        sortable: false,                     //是否启用排序                 //排序方式
+        queryParams: function(params){
+            console.log(data);
+            return {
+                pageSize: params.limit,
+                pageNo: params.offset/params.limit,
+                type:data
+            }
+        },         //传递参数（*）
+        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber:1,                       //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+        smartDisplay:false,
+        undefinedText: '---',
+        showColumns: false,                 //是否显示所有的列
+        showRefresh: false,                 //是否显示刷新按钮
+        minimumCountColumns: 1,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
+        cardView: false,                    //是否显示详细视图
+        detailView: false,                 //是否显示父子表
+        onLoadSuccess: function(result){
+            console.log(result.data);
+            $('#stock-panel-tbody').bootstrapTable('load', result.data);
+        },
+        columns: [{
+            field:'stockId',
+            title:'股票id',
+        },{
+            field:'stockName',
+            title:'股票名称',
+        },{
+            field:'achievementType',
+            title:'业绩预告类型',
+        },{
+            field:'achievementTitle',
+            title:'业绩预告摘要',
+        },{
+            field:'profileChangeRate',
+            title:'净利润变动幅度',
+        },{
+            field:'profileLastYear',
+            title:'上年同期净利润',
+        },{
+            field:'releaseDate',
+            title:'公告日期',
+        }
+        ],
+    });
     $('#stock-panel').fadeIn(100);
 }
 
-function bindDraggableDiv() {
+function getStockPanelDraggable() {
+    $("#stock-panel").mousedown(function (e) {
 
+        $(document).mousemove(function (e) {
+            var x = e.pageX;
+            var y = e.pageY;
+
+            if (x < 0) {
+                x = 0;
+            } else if (x > $(document).width() - $('#stock-panel').outerWidth(true)) {
+                x = $(document).width() - $('#stock-panel').outerWidth(true);
+            }
+
+            if (y < 0) {
+                y = 0;
+            } else if (y > $(document).height() - $('#stock-panel').outerHeight(true)) {
+                y = $(document).height() - $('#stock-panel').outerHeight(true);
+            }
+
+            $("#stock-panel").css({
+                'left': x + 'px',
+                'top': y + 'px'
+            });
+        });
+        $(document).mouseup(function() {
+            $(document).off('mousemove');
+        });
+    });
 }
 
 function drawTargetForm(data) {
