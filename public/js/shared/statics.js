@@ -483,6 +483,15 @@ function fetchStockPriceByType(data,object) {
     $('#stock-panel').fadeIn(100);
 }
 
+function fetchStockHolderDetailByData(data,object) {
+    var x = d3.event.clientX;
+    var y = d3.event.clientY;
+    $("#stock-panel").css("position", "absolute");
+    $("#stock-panel").css("top", x+1200);
+    $("#stock-panel").css("left", y+800);
+    $('#stock-panel-tbody').bootstrapTable('destroy');
+}
+
 function fetchStockAchievementDetailByData(data,object) {
     var x = d3.event.clientX;
     var y = d3.event.clientY;
