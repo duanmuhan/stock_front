@@ -360,7 +360,10 @@ function drawStockHolderConcentrate(data) {
         .attr("x", (d, i) => xScale(i))
         .attr("y", d => yScale(d.value))
         .attr("height", d => yScale(0) - yScale(d.value))
-        .attr("width", xScale.bandwidth());
+        .attr("width", xScale.bandwidth())
+        .on("mousedown",function (d,i) {
+            fetchStockHolderDetailByData(d.key,this);
+        });
     svg.append("g").selectAll("text")
         .data(data)
         .attr("font-size", 12)
@@ -490,6 +493,75 @@ function fetchStockHolderDetailByData(data,object) {
     $("#stock-panel").css("top", x+1200);
     $("#stock-panel").css("left", y+800);
     $('#stock-panel-tbody').bootstrapTable('destroy');
+    $('#stock-panel-tbody').bootstrapTable({
+        url: "http://127.0.0.1:8080/stockholder/marketValue/type",
+        toolbar: '#toolbar',
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination : true,                   //是否显示分页（*）
+        sortable: false,                     //是否启用排序                 //排序方式
+        queryParams: function(params){
+            console.log(data);
+            return {
+                pageSize: params.limit,
+                pageNo: params.offset/params.limit,
+                type:data
+            }
+        },         //传递参数（*）
+        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber:1,                       //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+        smartDisplay:false,
+        undefinedText: '---',
+        showColumns: false,                 //是否显示所有的列
+        showRefresh: false,                 //是否显示刷新按钮
+        minimumCountColumns: 1,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
+        cardView: false,                    //是否显示详细视图
+        detailView: false,                 //是否显示父子表
+        onLoadSuccess: function(result){
+            console.log(result.data);
+            $('#stock-panel-tbody').bootstrapTable('load', result.data);
+        },
+        columns: [{
+            field:'stockId',
+            title:'股票id',
+        },{
+            field:'stockName',
+            title:'股票名称',
+        },{
+            field:'numberOfShareholders',
+            title:'股东人数',
+        },{
+            field:'perCapitaTradableShares',
+            title:'人均流通股',
+        },{
+            field:'lastChange',
+            title:'较上期变化',
+        },{
+            field:'stockConvergenceRate',
+            title:'筹码集中度',
+        },{
+            field:'price',
+            title:'股价',
+        },{
+            field:'perCapitaHoldingAmount',
+            title:'人均持股金额',
+        },{
+            field:'topTenStockHolder',
+            title:'前十大股东持股合计',
+        },{
+            field:'topTenStockFlowHolder',
+            title:'前十大流通股东持股合计',
+        },{
+            field:'releaseDate',
+            title:'日期',
+        }
+        ],
+    });
+    $('#stock-panel').fadeIn(100);
 }
 
 function fetchStockAchievementDetailByData(data,object) {
