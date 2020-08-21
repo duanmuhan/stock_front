@@ -54,15 +54,15 @@ function fetchStockMarketValue(){
 function fetchStockChangeValue() {
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8080/stock/change/pie",
+        url:"http://127.0.0.1:8080/stock/change/hist",
         async: false,
         beforeSend:function(){
-            console.log("start to request /stock/market")
+            console.log("start to request /stock/change/hist")
         },
         success:function (result) {
             console.log(result.data)
-            d3.select("#stockPieChart").remove()
-            drawPieChart(result.data.list);
+            d3.select("#stockStockPriceChart").remove()
+            drawStockChangeHistChart(result.data.list);
         },
         error:function(e){
             console.log("function error")
@@ -246,45 +246,48 @@ function drawHistDiagram(data) {
 
 }
 
-function drawPieChart(data){
+function drawStockChangeHistChart(data){
 
-    var h = $("#barChart").height();
-    var w = $("#barChart").width();
-    var margin = {top: 20, right: 20, bottom: 20, left: 20};
-    var width = w - margin.right - margin.left;
-    var height = h-margin.top - margin.bottom;
-    var radius =  height / 2;
+    var margin = ({top: 30, right: 0, bottom: 30, left: 40})
 
-    var color = d3.scaleOrdinal().domain(data.map(d => d.changeRate)).range(d3.quantize(t => d3.interpolateSpectral(t  + 0.1), data.length).reverse())
-    var arc = d3.arc().innerRadius(0).outerRadius(radius - 50)
-    var pie =  d3.pie().sort(null).value(d=>d.changeNum);
-    var svg = d3.select("#barChart").append('svg').attr("viewBox", [-width / 2, -height / 2, width, height]).attr("id","stockPieChart").style("background", "#ffffff");
-    svg.append("g")
-        .attr("stroke", "white")
-        .selectAll("path")
-        .data(pie(data))
-        .join("path")
-        .attr("fill", d => color(d.data.changeNum))
-        .attr("d", arc)
-        .append("title")
-        .text(d => `${d.data.changeRate}: ${d.data.changeNum.toLocaleString()}`);
+    var h = $("#upAndDownStockHist").height();
+    var w = $("#upAndDownStockHist").width();
+    var svg = d3.select("#upAndDownStockHist").append('svg').attr('width', w).attr('height', h).attr("id","hist").style("background", "#ffffff");
+    var xScale = d3.scaleBand()
+        .domain(d3.range(data.length))
+        .range([margin.left, w - margin.right])
+        .padding(0.1);
+
+    var yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.changeNum)]).nice()
+        .range([h - margin.bottom, margin.top]);
+
+    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].changeRate).tickSizeOuter(0);
+    var yAxis = d3.axisLeft(yScale).ticks(null, data.format);
 
     svg.append("g")
-        .attr("font-family", "sans-serif")
+        .attr("fill", "steelblue")
+        .selectAll("rect")
+        .data(data)
+        .join("rect")
+        .attr("x", (d, i) => xScale(i))
+        .attr("y", d => yScale(d.changeNum))
+        .attr("height", d => yScale(0) - yScale(d.changeNum))
+        .attr("width", xScale.bandwidth());
+    svg.append("g").selectAll("text")
+        .data(data)
         .attr("font-size", 12)
-        .attr("text-anchor", "middle")
-        .selectAll("text")
-        .data(pie(data))
         .join("text")
-        .call(text => text.append("tspan")
-            .attr("y", "-0.4em")
-            .attr("font-weight", "bold")
-            .text(d => d.data.name))
-        .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
-            .attr("x", 0)
-            .attr("y", "0.7em")
-            .attr("fill-opacity", 0.7)
-            .text(d => d.data.changeNum.toLocaleString()));
+        .attr("text-anchor", "begin")
+        .attr("x", (d,i) => xScale(i) + xScale.bandwidth() / 3)
+        .attr("y", d => yScale(d.changeNum))
+        .text(d => d.changeNum);
+
+    svg.append("g")
+        .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`);
+
+    svg.append("g")
+        .call(yAxis).attr("transform", `translate(${margin.left},0)`);
 
 }
 
