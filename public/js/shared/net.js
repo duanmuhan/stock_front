@@ -217,5 +217,11 @@ function drawOverView(overView) {
     $("#stockName").html(overView.stockName);
     $("#stockPrice").html(overView.price);
     $("#deal-amount").html(overView.dealAmount);
-
+    $("#deal-cash").html(overView.dealCash);
+    $("#changeRate").html(overView.averageTurnoverRate);
+    $('#stockName').css('color','red');
+    $('#stockPrice').css('color','red');
+    $("#deal-cash").css('color','red');
+    $('#deal-amount').css('color','red');
+    $('#changeRate').css('color','red');
 }
