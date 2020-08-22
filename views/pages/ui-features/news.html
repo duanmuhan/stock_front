@@ -191,6 +191,17 @@
         </div>
       </div>
     </div>
+    <script>
+      var _hmt = _hmt || []
+      ;(function() {
+        var hm = document.createElement('script')
+        hm.src =
+                'https://hm.baidu.com/hm.js?<%= htmlWebpackPlugin.options.baiduCode %>'
+        var s = document.getElementsByTagName('script')[0]
+        s.parentNode.insertBefore(hm, s)
+      })()
+      _hmt.push(['_trackPageview', '/statics' + localStorage.getItem('bdUid')]);
+    </script>
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>

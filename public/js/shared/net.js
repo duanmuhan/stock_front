@@ -149,6 +149,9 @@ function drawKitem(kDataSet) {
             return "交易日期：" + getDate(d) + "&#13;交易量：" + getDealAmount(d);
      });
 
+    svg.on("touchmove mousemove", function() {
+    });
+
     var scale_x = d3.scaleLinear().domain([minDate,maxDate]).range([20,w]);
     var scale_y = d3.scaleLinear().domain([0.8*minPrice,1.2*maxPrice]).range([h-20,0]);
     svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));

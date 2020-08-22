@@ -137,16 +137,14 @@ function fetchStockHolderAchievement() {
 function drawScatterDiagram(data) {
     var h = $("#mixed-chart").height();
     var w = $("#mixed-chart").width();
-    var rightPadding = 30;
-    var height = h-rightPadding;
-    var width = w-rightPadding;
+    var margin = ({top: 30, right: 0, bottom: 30, left: 40})
     var svg = d3.select("#mixed-chart").append('svg').attr('width', w).attr('height', h).style("background", "#ffffff");
     var maxPrice = d3.max(data.map(e=>e.price));
     var minPrice = d3.min(data.map(e=>e.price));
     var perCommonMaxShare = d3.max(data.map(e=>e.basicEarningsPerCommonShare));
     var perCommonMinShare = d3.min(data.map(e=>e.basicEarningsPerCommonShare));
-    var x_scale = d3.scaleLog().domain([minPrice, maxPrice]).range([0,width]);
-    var y_scale = d3.scalePow().exponent(0.3).domain([perCommonMinShare, perCommonMaxShare]).range([0,height]);
+    var x_scale = d3.scaleLog().domain([minPrice, maxPrice]).range([margin.left, w - margin.right]);
+    var y_scale = d3.scalePow().exponent(0.3).domain([perCommonMinShare, perCommonMaxShare]).nice().range([h - margin.bottom, margin.top]);;
     var tooltip = d3.select("circle").append("div")
         .attr("class","tooltip")
     svg.selectAll("circle").data(data).enter()
@@ -156,14 +154,13 @@ function drawScatterDiagram(data) {
             return x_scale(d.price);
         })
         .attr("cy", function(d) {
-            return height - y_scale(d.basicEarningsPerCommonShare);
+            return h - y_scale(d.basicEarningsPerCommonShare);
         })
         .attr("r", 4)
         .attr("fill","red")
         .on("mouseenter",function (d) {
             var x = x_scale(d.price);
-            var y = height - y_scale(d.basicEarningsPerCommonShare);
-            console.log("mouseover");
+            var y = h - y_scale(d.basicEarningsPerCommonShare);
             svg.append("text")
                 .attr("id", "tooltip")
                 .attr("x", x)
@@ -180,7 +177,7 @@ function drawScatterDiagram(data) {
             d3.select("#tooltip").remove();
         }).on("mouseover",function(d) {
             var x = x_scale(d.price);
-            var y = height - y_scale(d.basicEarningsPerCommonShare);
+            var y = h - y_scale(d.basicEarningsPerCommonShare);
             console.log("mouseover");
             svg.append("text")
                 .attr("id", "tooltip")
@@ -195,10 +192,11 @@ function drawScatterDiagram(data) {
                 .text("股票id" + d.stockId);
         }
     )
-    var scale_x = d3.scaleLog().domain([minPrice,maxPrice]).range([20,w]);
-    var scale_y = d3.scalePow().domain([perCommonMinShare,perCommonMaxShare]).range([h-20,0]);
-    svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
-    svg.append("g").attr("font-size","20").attr('transform', 'translate(30,0)').call(d3.axisLeft().scale(scale_y));
+    svg.append("g")
+        .call(x_scale).attr("transform", `translate(0,${h - margin.bottom})`);
+
+    svg.append("g")
+        .call(y_scale).attr("transform", `translate(${margin.left},0)`);
 }
 
 function drawHistDiagram(data) {

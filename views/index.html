@@ -40,12 +40,6 @@
 	  </form>
 	  <ul class="navbar-nav ml-auto">
 		<li class="nav-item dropdown">
-		  <a class="nav-link count-indicator" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-			<i class="mdi mdi-bell-outline"></i>
-			<span class="count">7</span>
-		  </a>
-		  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
-		  </div>
 		</li>
 		<li class="nav-item dropdown">
 		  <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-toggle="dropdown">
@@ -178,8 +172,8 @@
 				  <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
 					<div class="d-flex">
 					  <div class="wrapper">
-						<h3 class="mb-0 font-weight-semibold">1,553</h3>
-						<h5 class="mb-0 font-weight-medium text-primary">--</h5>
+						<h3 class="mb-0 font-weight-semibold">--</h3>
+						<h5 class="mb-0 font-weight-medium text-primary">换手率</h5>
 					  </div>
 					</div>
 				  </div>
@@ -247,14 +241,6 @@
 			</div>
 		</div>
 		<div class="row" style="overflow:auto">
-		  <div class="col-md-4 grid-margin stretch-card">
-			<div class="card">
-			  <div class="card-body">
-				<h4 class="card-title mb-0">MACD图</h4>
-				<div id="stock-macditem" style="width:400px; height: 200px" ></div>
-			  </div>
-			</div>
-		  </div>
 		  <div class="col-md-4 grid-margin stretch-card">
 			<div class="card">
 			  <div class="card-body">
@@ -354,8 +340,17 @@
   </div>
   <!-- page-body-wrapper ends -->
 </div>
-<!-- container-scroller -->
-<!-- plugins:js -->
+<script>
+	var _hmt = _hmt || []
+	;(function() {
+		var hm = document.createElement('script')
+		hm.src =
+				'https://hm.baidu.com/hm.js?<%= htmlWebpackPlugin.options.baiduCode %>'
+		var s = document.getElementsByTagName('script')[0]
+		s.parentNode.insertBefore(hm, s)
+	})()
+	_hmt.push(['_trackPageview', '/statics' + localStorage.getItem('bdUid')]);
+</script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-3-typeahead/3.0.3/bootstrap3-typeahead.js"></script>
