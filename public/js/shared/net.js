@@ -121,6 +121,13 @@ function drawKitem(kDataSet) {
     var minPrice = d3.min(kDataSet.kitemList.map(e=>e.low));
     var maxPrice = d3.max(kDataSet.kitemList.map(e=>e.high));
 
+    var tooltip = d3.select("body").append("div")
+        .attr("class","tooltip") //用于css设置类样式
+        .attr("opacity",0.0);
+
+    var scale_x = d3.scaleLinear().domain([minDate,maxDate]).range([20,w]);
+    var scale_y = d3.scaleLinear().domain([0.8*minPrice,1.2*maxPrice]).range([h-20,0]);
+
     var yscale = d3.scaleLinear().domain([0.8*minPrice, 1.2*maxPrice]).range([0,height-20]);
     svg.selectAll("line").data(kDataSet.kitemList).enter().append('line').attr('x1',function (d,i) {
         return i * (width/dataCnt) + (w/dataCnt - barPadding)/2 + rightPadding;
@@ -147,17 +154,48 @@ function drawKitem(kDataSet) {
     }).attr("fill", getColor)
         .attr('title', function(d, i) {
             return "交易日期：" + getDate(d) + "&#13;交易量：" + getDealAmount(d);
-     });
-
-    svg.on("touchmove mousemove", function() {
+     }).on("touchmove mousemove",function (d,i) {
+        tooltip.html("开盘价格: " + d.closePrice + "<br/>"
+            + "收盘价格: " + d.openPrice + "<br/>"
+            + "最高价格: " + d.high + "<br/>"
+            + "最低价格: " + d.low + "<br/>"
+            + "日期: " + d.date)
+            .style("left",(d3.event.pageX)+"px")
+            .style("top",(d3.event.pageY+20)+"px")
+            .style("opacity",1.0);
+    }).on("mouseout",function(d,i) {
+        tooltip.style("opacity",0.0);
     });
 
-    var scale_x = d3.scaleLinear().domain([minDate,maxDate]).range([20,w]);
-    var scale_y = d3.scaleLinear().domain([0.8*minPrice,1.2*maxPrice]).range([h-20,0]);
     svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
     svg.append("g").attr("font-size","20").attr('transform', 'translate(20,0)').call(d3.axisLeft().scale(scale_y));
 }
 
+function callout(g,value) {
+    if (!value) return g.style("display", "none");
+    g.style("display", null).style("pointer-events", "none").style("font", "10px sans-serif");
+    const path = g.selectAll("path")
+        .data([null])
+        .join("path")
+        .attr("fill", "white")
+        .attr("stroke", "black");
+
+    const text = g.selectAll("text")
+        .data([null])
+        .join("text")
+        .call(text => text
+            .selectAll("tspan")
+            .data((value + "").split(/\n/))
+            .join("tspan")
+            .attr("x", 0)
+            .attr("y", (d, i) => `${i * 1.1}em`)
+            .style("font-weight", (_, i) => i ? null : "bold")
+            .text(d => d));
+    const {x, y, width: w, height: h} = text.node().getBBox();
+
+    text.attr("transform", `translate(${-w / 2},${15 - y})`);
+    path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
+}
 
 function getLow(kItem) {
     return kItem.low;
@@ -214,14 +252,59 @@ function drawAverage(averageDataSet) {
 }
 
 function drawOverView(overView) {
+    $("#stockName").empty()
+    $("#stockPrice").empty();
+    $("#deal-amount").empty();
+    $("#deal-cash").empty();
+    $("#changeRate").empty();
+    $("#rise-percent").empty();
+
     $("#stockName").html(overView.stockName);
     $("#stockPrice").html(overView.price);
     $("#deal-amount").html(overView.dealAmount);
     $("#deal-cash").html(overView.dealCash);
     $("#changeRate").html(overView.averageTurnoverRate);
-    $('#stockName').css('color','red');
-    $('#stockPrice').css('color','red');
-    $("#deal-cash").css('color','red');
-    $('#deal-amount').css('color','red');
-    $('#changeRate').css('color','red');
+    $("#rise-percent").html(overView.change);
+    if (overView.priceRate > 0){
+        $('#stockName').css('color','red');
+        $('#stockPrice').css('color','red');
+        $("#deal-cash").css('color','red');
+        $('#deal-amount').css('color','red');
+        $('#changeRate').css('color','red');
+        $('#rise-percent').css('color','red');
+    }else {
+        $('#stockName').css('color','green');
+        $('#stockPrice').css('color','green');
+        $("#deal-cash").css('color','green');
+        $('#deal-amount').css('color','green');
+        $('#changeRate').css('color','green');
+        $('#rise-percent').css('color','green');
+    }
+}
+
+function bisect(e) {
+    var bisect = d3.bisector(d => d.date).left;
+    return mx => {
+        const date = x.invert(mx);
+        const index = bisect(data, date, 1);
+        const a = data[index - 1];
+        const b = data[index];
+        return b && (date - a.date > b.date - date) ? b : a;
+    };
+}
+
+function formatValue(value) {
+    return value.toLocaleString("en", {
+        style: "currency",
+        currency: "USD"
+    });
+}
+
+function formatDate(date) {
+    return date.toLocaleString("en", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        timeZone: "UTC"
+    });
 }
