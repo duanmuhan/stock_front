@@ -50,7 +50,7 @@ $(function () {
                     console.log("start to request /stockList")
                 },
                 success:function (result) {
-                    d3.select("svg").remove()
+                    d3.select("#stock-kitem-content").remove()
                     kitem = result.data;
                     drawKitem(result.data);
                 },
@@ -86,6 +86,7 @@ $(function () {
                 },
                 success:function (result) {
                     var dataList = result.data.fiveDayList;
+                    d3.select("#stock-index-content").remove()
                     drawAverage(dataList)
                 },
                 error:function(e){
@@ -114,7 +115,7 @@ function drawKitem(kDataSet) {
     var width = w-rightPadding;
     var dataCnt = kDataSet.kitemList.length;
     var barPadding = 4;
-    var svg = d3.select("#stock-kitem").append('svg').attr('width', w).attr('height', h).style("background", "#ffffff");
+    var svg = d3.select("#stock-kitem").append('svg').attr('width', w).attr('height', h).attr("id","stock-kitem-content").style("background", "#ffffff");
     var dateArray = kDataSet.kitemList.map(e=>parseInt(e.date));
     var maxDate = d3.max(dateArray)
     var minDate = d3.min(dateArray)
@@ -155,8 +156,8 @@ function drawKitem(kDataSet) {
         .attr('title', function(d, i) {
             return "交易日期：" + getDate(d) + "&#13;交易量：" + getDealAmount(d);
      }).on("touchmove mousemove",function (d,i) {
-        tooltip.html("开盘价格: " + d.closePrice + "<br/>"
-            + "收盘价格: " + d.openPrice + "<br/>"
+        tooltip.html("开盘价格: " + d.openPrice + "<br/>"
+            + "收盘价格: " + d.closePrice + "<br/>"
             + "最高价格: " + d.high + "<br/>"
             + "最低价格: " + d.low + "<br/>"
             + "日期: " + d.date)
@@ -233,7 +234,7 @@ function drawAverage(averageDataSet) {
     var width = w-rightPadding;
     var dataCnt = averageDataSet.length;
     var barPadding = 4;
-    var svg = d3.select("#stock-index").append('svg').attr('width', w).attr('height', h).style("background", "#ffffff");
+    var svg = d3.select("#stock-index").append('svg').attr('width', w).attr('height', h).attr("id","stock-index-content").style("background", "#ffffff");
     var listArray = averageDataSet.map(e=>parseFloat(e.price));
     var maxPrice = d3.max(listArray);
     var minPrice = d3.min(listArray);
