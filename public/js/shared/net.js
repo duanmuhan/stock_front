@@ -1,9 +1,5 @@
-
-
+var currentStockId = "000001";
 $(function () {
-
-    var kitem=null;
-    var currentStockId = "000001";
     var paramName;
     var paramValue;
     $("#stock-input").typeahead({
@@ -44,14 +40,13 @@ $(function () {
             currentStockId = item.substr(0,6);
             $.ajax({
                 type:"GET",
-                url:"http://127.0.0.1:8080/kitem?" + "stockId=" + currentStockId,
+                url:"http://127.0.0.1:8080/kitem?" + "stockId=" + currentStockId + "&type=1",
                 async: false,
                 beforeSend:function(){
                     console.log("start to request /stockList")
                 },
                 success:function (result) {
                     d3.select("#stock-kitem-content").remove()
-                    kitem = result.data;
                     drawKitem(result.data);
                 },
                 error:function(e){
@@ -100,7 +95,7 @@ $(function () {
         },
         items:10
     })
-
+    initKItemTabEvent();
 });
 
 function f() {
@@ -170,32 +165,6 @@ function drawKitem(kDataSet) {
 
     svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
     svg.append("g").attr("font-size","20").attr('transform', 'translate(20,0)').call(d3.axisLeft().scale(scale_y));
-}
-
-function callout(g,value) {
-    if (!value) return g.style("display", "none");
-    g.style("display", null).style("pointer-events", "none").style("font", "10px sans-serif");
-    const path = g.selectAll("path")
-        .data([null])
-        .join("path")
-        .attr("fill", "white")
-        .attr("stroke", "black");
-
-    const text = g.selectAll("text")
-        .data([null])
-        .join("text")
-        .call(text => text
-            .selectAll("tspan")
-            .data((value + "").split(/\n/))
-            .join("tspan")
-            .attr("x", 0)
-            .attr("y", (d, i) => `${i * 1.1}em`)
-            .style("font-weight", (_, i) => i ? null : "bold")
-            .text(d => d));
-    const {x, y, width: w, height: h} = text.node().getBBox();
-
-    text.attr("transform", `translate(${-w / 2},${15 - y})`);
-    path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
 }
 
 function getLow(kItem) {
@@ -308,4 +277,43 @@ function formatDate(date) {
         year: "numeric",
         timeZone: "UTC"
     });
+}
+
+function initKItemTabEvent() {
+}
+
+function kItemSwitchEvent(params) {
+    var id = params.id;
+    $(".active").removeClass('active');
+    $("#" + id).attr('class','nav-link active');
+    if ("kItem-statistics_switch_1" == id){
+        fetchKItem(currentStockId,1);
+    }else if ("kItem-statistics_switch_2" == id){
+        fetchKItem(currentStockId,2);
+    }else if ("kItem-statistics_switch_3" == id){
+        fetchKItem(currentStockId,3);
+    }else if ("kItem-statistics_switch_4" == id){
+        alert("暂时没有数据");
+    }
+}
+
+function fetchKItem(stockId,type) {
+    $.ajax({
+        type:"GET",
+        url:"http://127.0.0.1:8080/kitem?" + "stockId=" + stockId + "&type=" + type,
+        async: false,
+        beforeSend:function(){
+            console.log("start to request /stockList")
+        },
+        success:function (result) {
+            d3.select("#stock-kitem-content").remove()
+            kitem = result.data;
+            drawKitem(result.data);
+        },
+        error:function(e){
+            console.log("function error")
+            console.log(e.status)
+            console.log(e.responseText)
+        }
+    })
 }
