@@ -212,10 +212,10 @@ function drawHistDiagram(data) {
         .padding(0.1);
 
     var yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.value)]).nice()
+        .domain([0, d3.max(data, d => d.second)]).nice()
         .range([h - margin.bottom, margin.top]);
 
-    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].key).tickSizeOuter(0);
+    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].first).tickSizeOuter(0);
     var yAxis = d3.axisLeft(yScale).ticks(null, data.format);
 
     svg.append("g")
@@ -224,8 +224,8 @@ function drawHistDiagram(data) {
         .data(data)
         .join("rect")
         .attr("x", (d, i) => xScale(i))
-        .attr("y", d => yScale(d.value))
-        .attr("height", d => yScale(0) - yScale(d.value))
+        .attr("y", d => yScale(d.second))
+        .attr("height", d => yScale(0) - yScale(d.second))
         .attr("width", xScale.bandwidth());
     svg.append("g").selectAll("text")
         .data(data)
@@ -233,8 +233,8 @@ function drawHistDiagram(data) {
         .join("text")
         .attr("text-anchor", "begin")
         .attr("x", (d,i) => xScale(i) + xScale.bandwidth() / 3)
-        .attr("y", d => yScale(d.value))
-        .text(d => d.value);
+        .attr("y", d => yScale(d.second))
+        .text(d => d.second);
 
     svg.append("g")
         .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`);
@@ -302,10 +302,10 @@ function drawStockPriceHist(data) {
         .padding(0.1);
 
     var yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.value)]).nice()
+        .domain([0, d3.max(data, d => d.second)]).nice()
         .range([h - margin.bottom, margin.top]);
 
-    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].key).tickSizeOuter(0);
+    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].first).tickSizeOuter(0);
     var yAxis = d3.axisLeft(yScale).ticks(null, data.format);
 
     svg.append("g")
@@ -314,11 +314,11 @@ function drawStockPriceHist(data) {
         .data(data)
         .join("rect")
         .attr("x", (d, i) => xScale(i))
-        .attr("y", d => yScale(d.value))
-        .attr("height", d => yScale(0) - yScale(d.value))
+        .attr("y", d => yScale(d.second))
+        .attr("height", d => yScale(0) - yScale(d.second))
         .attr("width", xScale.bandwidth())
         .on("mousedown",function (d,i) {
-            fetchStockPriceByType(d.key,this);
+            fetchStockPriceByType(d.first,this);
         });
     svg.append("g").selectAll("text")
         .data(data)
@@ -326,8 +326,8 @@ function drawStockPriceHist(data) {
         .join("text")
         .attr("text-anchor", "begin")
         .attr("x", (d,i) => xScale(i) + xScale.bandwidth() / 3)
-        .attr("y", d => yScale(d.value))
-        .text(d => d.value);
+        .attr("y", d => yScale(d.second))
+        .text(d => d.second);
 
     svg.append("g")
         .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`);
@@ -347,10 +347,10 @@ function drawStockHolderConcentrate(data) {
         .padding(0.1);
 
     var yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.value)]).nice()
+        .domain([0, d3.max(data, d => d.second)]).nice()
         .range([h - margin.bottom, margin.top]);
 
-    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].key).tickSizeOuter(0);
+    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].first).tickSizeOuter(0);
     var yAxis = d3.axisLeft(yScale).ticks(null, data.format);
 
     svg.append("g")
@@ -359,8 +359,8 @@ function drawStockHolderConcentrate(data) {
         .data(data)
         .join("rect")
         .attr("x", (d, i) => xScale(i))
-        .attr("y", d => yScale(d.value))
-        .attr("height", d => yScale(0) - yScale(d.value))
+        .attr("y", d => yScale(d.second))
+        .attr("height", d => yScale(0) - yScale(d.second))
         .attr("width", xScale.bandwidth())
         .on("mousedown",function (d,i) {
             fetchStockHolderDetailByData(d.key,this);
@@ -371,8 +371,8 @@ function drawStockHolderConcentrate(data) {
         .join("text")
         .attr("text-anchor", "begin")
         .attr("x", (d,i) => xScale(i) + xScale.bandwidth() / 3)
-        .attr("y", d => yScale(d.value))
-        .text(d => d.value);
+        .attr("y", d => yScale(d.second))
+        .text(d => d.second);
 
     svg.append("g")
         .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`);
@@ -392,10 +392,10 @@ function drawStockAchievementHist(data) {
         .padding(0.1);
 
     var yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.value)]).nice()
+        .domain([0, d3.max(data, d => d.second)]).nice()
         .range([h - margin.bottom, margin.top]);
 
-    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].key).tickSizeOuter(0);
+    var xAxis = d3.axisBottom(xScale).tickFormat(i => data[i].first).tickSizeOuter(0);
     var yAxis = d3.axisLeft(yScale).ticks(null, data.format);
 
     svg.append("g")
@@ -404,8 +404,8 @@ function drawStockAchievementHist(data) {
         .data(data)
         .join("rect")
         .attr("x", (d, i) => xScale(i))
-        .attr("y", d => yScale(d.value))
-        .attr("height", d => yScale(0) - yScale(d.value))
+        .attr("y", d => yScale(d.second))
+        .attr("height", d => yScale(0) - yScale(d.second))
         .attr("width", xScale.bandwidth())
         .on("mousedown",function (d,i) {
             fetchStockAchievementDetailByData(d.key,this);
@@ -417,8 +417,8 @@ function drawStockAchievementHist(data) {
         .join("text")
         .attr("text-anchor", "begin")
         .attr("x", (d,i) => xScale(i) + xScale.bandwidth() / 3)
-        .attr("y", d => yScale(d.value))
-        .text(d => d.value);
+        .attr("y", d => yScale(d.second))
+        .text(d => d.second);
 
     svg.append("g")
         .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`);
