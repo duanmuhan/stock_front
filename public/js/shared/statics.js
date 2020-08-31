@@ -41,6 +41,9 @@ function fetchStockMarketValue(){
         success:function (result) {
             console.log(result.data)
             d3.select("#hist").remove()
+            if (result.data.valuePairList == null){
+                return;
+            }
             drawHistDiagram(result.data.valuePairList);
         },
         error:function(e){
@@ -62,6 +65,9 @@ function fetchStockChangeValue() {
         success:function (result) {
             console.log(result.data)
             d3.select("#stockStockPriceChart").remove()
+            if (result.data.list == null){
+                return;
+            }
             drawStockChangeHistChart(result.data.list);
         },
         error:function(e){
@@ -82,6 +88,9 @@ function fetchStockPriceHistValue() {
         },
         success:function (result) {
             console.log(result.data)
+            if (result.data.list == null){
+                return;
+            }
             d3.select("#stockPriceHistSvg").remove()
             drawStockPriceHist(result.data.list);
         },
@@ -103,6 +112,9 @@ function fetchStockHolderConcentrate() {
         },
         success:function (result) {
             console.log(result.data)
+            if (result.data.list == null){
+                return;
+            }
             d3.select("#stockHolderConcentrateHist").remove()
             drawStockHolderConcentrate(result.data.list);
         },
@@ -124,6 +136,9 @@ function fetchStockHolderAchievement() {
         },
         success:function (result) {
             d3.select("#stockAchievementHistGraph").remove()
+            if (result.data.list == null){
+                return;
+            }
             drawStockAchievementHist(result.data.list);
         },
         error:function(e){
