@@ -11,7 +11,7 @@ var pageSize = 10;
 var currentStartPagePage = 1;
 function renderTopValuePerPrice(){
                 $('#latestShareBonus').bootstrapTable({
-                    url: "http://124.70.139.25:8083/topValuePerPrice/form",
+                    url: "http://127.0.0.1:8083/topValuePerPrice/form",
                     toolbar: '#toolbar',
                     striped: true,                      //是否显示行间隔色
                     cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -65,7 +65,7 @@ function renderTopValuePerPrice(){
 function renderHighestIncreaseShare(){
     var dataList;
     $('#highestIncreaseTable').bootstrapTable({
-        url: "http://124.70.139.25:8083/stock/increase/rank",
+        url: "http://127.0.0.1:8083/stock/increase/rank",
         toolbar: '#toolbar',
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -117,7 +117,7 @@ function renderHighestIncreaseShare(){
 
 function renderHighestPeriodIncreaseShare(){
     $('#highestPeriodIncreaseShare').bootstrapTable({
-        url: "http://124.70.139.25:8083/stock/rate/rank",
+        url: "http://127.0.0.1:8083/stock/rate/rank",
         toolbar: '#toolbar',
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -172,7 +172,7 @@ function renderHighestPeriodIncreaseShare(){
 
 function renderStockAchievement(){
                  $('#stockAchievement').bootstrapTable({
-                    url: "http://124.70.139.25:8083/stock/achievement/list",
+                    url: "http://127.0.0.1:8083/stock/achievement/list",
                     toolbar: '#toolbar',
                     striped: true,                      //是否显示行间隔色
                     cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -231,7 +231,7 @@ function renderStockAchievement(){
 
 function renderStockScore(currentPage){
                     $('#stockScore').bootstrapTable({
-                        url: "http://124.70.139.25:8083/stock/technology/score",
+                        url: "http://127.0.0.1:8083/stock/technology/score",
                         toolbar: '#toolbar',
                         striped: true,                      //是否显示行间隔色
                         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -281,7 +281,7 @@ function renderStockScore(currentPage){
 
 function renderStockTechnology(){
                  $('#stockTechnologyForm').bootstrapTable({
-                    url: "http://124.70.139.25:8083/stock/technology",
+                    url: "http://127.0.0.1:8083/stock/technology",
                     toolbar: '#toolbar',
                     striped: true,                      //是否显示行间隔色
                     cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
