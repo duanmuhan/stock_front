@@ -7,7 +7,7 @@ function fetchArticle() {
     var releaseDate = getBeforeDate(3);
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8080/stock/news/list?" + "releaseDate=" + releaseDate,
+        url:"http://124.70.139.25:8083/stock/news/list?" + "releaseDate=" + releaseDate,
         async: false,
         beforeSend:function(){
             console.log("start to request /stock/news/list")
@@ -59,7 +59,7 @@ function displayStockItems(element) {
     var plateId=element.id;
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8080/plate/stock/list?" + "plateId=" + plateId,
+        url:"http://124.70.139.25:8083/plate/stock/list?" + "plateId=" + plateId,
         async: false,
         beforeSend:function(){
             console.log("start to request /plate/stock/list")
