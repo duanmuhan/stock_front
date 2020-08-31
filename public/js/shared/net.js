@@ -15,7 +15,7 @@ $(function () {
             }
             $.ajax({
                 type:"GET",
-                url:"http://127.0.0.1:8083/stockList?" + paramName + "=" + paramValue,
+                url:"http://124.70.139.25:8083/stockList?" + paramName + "=" + paramValue,
                 async: false,
                 beforeSend:function(){
                     console.log("start to request /stockList")
@@ -40,7 +40,7 @@ $(function () {
             currentStockId = item.substr(0,6);
             $.ajax({
                 type:"GET",
-                url:"http://127.0.0.1:8083/kitem?" + "stockId=" + currentStockId + "&type=1",
+                url:"http://124.70.139.25:8083/kitem?" + "stockId=" + currentStockId + "&type=1",
                 async: false,
                 beforeSend:function(){
                     console.log("start to request /stockList")
@@ -57,7 +57,7 @@ $(function () {
             })
             $.ajax({
                 type:"GET",
-                url:"http://127.0.0.1:8083/stock/overview?" + "stockId=" + currentStockId,
+                url:"http://124.70.139.25:8083/stock/overview?" + "stockId=" + currentStockId,
                 async: false,
                 beforeSend:function(){
                     console.log("start to request /stock/overview")
@@ -74,7 +74,7 @@ $(function () {
             });
             $.ajax({
                 type:"GET",
-                url:"http://127.0.0.1:8083/average?" + "stockId=" + currentStockId,
+                url:"http://124.70.139.25:8083/average?" + "stockId=" + currentStockId,
                 async: false,
                 beforeSend:function(){
                     console.log("start to request /average")
@@ -300,7 +300,7 @@ function kItemSwitchEvent(params) {
 function fetchKItem(stockId,type) {
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8083/kitem?" + "stockId=" + stockId + "&type=" + type,
+        url:"http://124.70.139.25:8083/kitem?" + "stockId=" + stockId + "&type=" + type,
         async: false,
         beforeSend:function(){
             console.log("start to request /stockList")

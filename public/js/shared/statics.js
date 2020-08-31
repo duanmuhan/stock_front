@@ -12,7 +12,7 @@ function fetchPriceAndShare() {
 
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8083/topValuePerPrice",
+        url:"http://124.70.139.25:8083/topValuePerPrice",
         async: false,
         beforeSend:function(){
             console.log("start to request /topValuePerPrice")
@@ -33,7 +33,7 @@ function fetchPriceAndShare() {
 function fetchStockMarketValue(){
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8083/stock/market/hist",
+        url:"http://124.70.139.25:8083/stock/market/hist",
         async: false,
         beforeSend:function(){
             console.log("start to request /stock/market")
@@ -54,7 +54,7 @@ function fetchStockMarketValue(){
 function fetchStockChangeValue() {
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8083/stock/change/hist",
+        url:"http://124.70.139.25:8083/stock/change/hist",
         async: false,
         beforeSend:function(){
             console.log("start to request /stock/change/hist")
@@ -75,7 +75,7 @@ function fetchStockChangeValue() {
 function fetchStockPriceHistValue() {
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8083/stock/price/hist",
+        url:"http://124.70.139.25:8083/stock/price/hist",
         async: false,
         beforeSend:function(){
             console.log("start to request /stock/market")
@@ -96,7 +96,7 @@ function fetchStockPriceHistValue() {
 function fetchStockHolderConcentrate() {
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8083/stockholder/rate/hist",
+        url:"http://124.70.139.25:8083/stockholder/rate/hist",
         async: false,
         beforeSend:function(){
             console.log("start to request /stockholder/rate/hist")
@@ -117,7 +117,7 @@ function fetchStockHolderConcentrate() {
 function fetchStockHolderAchievement() {
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:8083/stock/achievement/group",
+        url:"http://124.70.139.25:8083/stock/achievement/group",
         async: false,
         beforeSend:function(){
             console.log("start to request /stock/achievement/group")
@@ -437,7 +437,7 @@ function fetchStockPriceByType(data,object) {
     $("#stock-panel").css("left", y+800);
     $('#stock-panel-tbody').bootstrapTable('destroy');
     $('#stock-panel-tbody').bootstrapTable({
-        url: "http://127.0.0.1:8083/stock/price/type",
+        url: "http://124.70.139.25:8083/stock/price/type",
         toolbar: '#toolbar',
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -495,7 +495,7 @@ function fetchStockHolderDetailByData(data,object) {
     $("#stock-panel").css("left", y+800);
     $('#stock-panel-tbody').bootstrapTable('destroy');
     $('#stock-panel-tbody').bootstrapTable({
-        url: "http://127.0.0.1:8083/stockholder/marketValue/type",
+        url: "http://124.70.139.25:8083/stockholder/marketValue/type",
         toolbar: '#toolbar',
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -574,7 +574,7 @@ function fetchStockAchievementDetailByData(data,object) {
     $("#stock-panel").css("left", y+800);
     $('#stock-panel-tbody').bootstrapTable('destroy');
     $('#stock-panel-tbody').bootstrapTable({
-        url: "http://127.0.0.1:8083/stock/achievement/type/list",
+        url: "http://124.70.139.25:8083/stock/achievement/type/list",
         toolbar: '#toolbar',
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
