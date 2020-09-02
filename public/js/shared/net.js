@@ -74,7 +74,7 @@ $(function () {
             });
             $.ajax({
                 type:"GET",
-                url:"http://124.70.139.25:8083/average?" + "stockId=" + currentStockId,
+                url:"http://124.70.139.25:8083/average?" + "stockId=" + currentStockId + "&type=2",
                 async: false,
                 beforeSend:function(){
                     console.log("start to request /average")
@@ -196,28 +196,28 @@ function getDealAmount(kItem) {
 }
 
 function drawAverage(averageDataSet) {
-    var h = $("#stock-index").height();
-    var w = $("#stock-index").width();
-    var rightPadding = 30;
-    var height = h-rightPadding;
-    var width = w-rightPadding;
-    var dataCnt = averageDataSet.length;
-    var barPadding = 4;
-    var svg = d3.select("#stock-index").append('svg').attr('width', w).attr('height', h).attr("id","stock-index-content").style("background", "#ffffff");
-    var listArray = averageDataSet.map(e=>parseFloat(e.price));
-    var maxPrice = d3.max(listArray);
-    var minPrice = d3.min(listArray);
-    var dateArray = averageDataSet.map(e=>parseInt(e.date));
-    var maxDate = d3.max(dateArray)
-    var minDate = d3.min(dateArray)
-    var scale_x = d3.scaleLinear().domain([minDate,maxDate]).range([20,w]);
-    var scale_y = d3.scaleLinear().domain([0.8*minPrice,1.2*maxPrice]).range([h-20,0]);
-
-    var line_generator = d3.line().x(function(d){return scale_x(d.date);}).y(function(d){return scale_y(d.price);}).curve(d3.curveBasis);//把曲线设置光滑
-
-    svg.append("g").append("path").attr("d", line_generator(averageDataSet)).attr('fill','none').attr('stroke','blue').attr('stroke-width','2');
-    svg.append("g").attr("font-size","20").attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(scale_x));
-    svg.append("g").attr("font-size","20").attr('transform', 'translate(20,0)').call(d3.axisLeft().scale(scale_y));
+    var height = $("#stock-index").height();
+    var width = $("#stock-index").width();
+    var margin = ({top: 30, right: 0, bottom: 30, left: 40})
+    var scale_x = d3.scaleUtc().domain(d3.extent(averageDataSet, d => d.date)).range([margin.left, width - margin.right]);
+    var scale_y = d3.scaleLinear().domain([0, d3.max(averageDataSet, d => d.price)]).nice().range([height - margin.bottom, margin.top]);
+    var svg = d3.select("#stock-index").append('svg').attr('width', width).attr('height', height).attr("id","stock-index-content").style("background", "#ffffff");
+    // var line = d3.line().x(d=>scale_x(d.date)).y(d=>scale_y(d.price));
+    // svg.append("path")
+    //     .datum(averageDataSet)
+    //     .attr("fill", "none")
+    //     .attr("stroke", "steelblue")
+    //     .attr("stroke-width", 1.5)
+    //     .attr("stroke-linejoin", "round")
+    //     .attr("stroke-linecap", "round")
+    //     .attr("d", line);
+    svg.append("g").attr("font-size","20").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(scale_x).ticks(10).tickSizeOuter(0));
+    svg.append("g").attr("font-size","20").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft().scale(scale_y)).call(g => g.select(".domain").remove())
+        .call(g => g.select(".tick:last-of-type text").clone()
+            .attr("x", 3)
+            .attr("text-anchor", "start")
+            .attr("font-weight", "bold")
+            .text(averageDataSet.price));
 
 }
 
@@ -228,6 +228,7 @@ function drawOverView(overView) {
     $("#deal-cash").empty();
     $("#changeRate").empty();
     $("#rise-percent").empty();
+    $("#score").empty();
 
     $("#stockName").html(overView.stockName);
     $("#stockPrice").html(overView.price);
@@ -235,6 +236,9 @@ function drawOverView(overView) {
     $("#deal-cash").html(overView.dealCash);
     $("#changeRate").html(overView.averageTurnoverRate);
     $("#rise-percent").html(overView.change);
+    $("#score").html(overView.plateInfo);
+    $("#plateInfo").html(overView.score);
+    $("#technology").val(overView.sharePerPrice);
     if (overView.priceRate > 0){
         $('#stockName').css('color','red');
         $('#stockPrice').css('color','red');
