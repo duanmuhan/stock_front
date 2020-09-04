@@ -5,7 +5,8 @@ $(function () {
     fetchStockChangeValue();
     fetchStockPriceHistValue();
     fetchStockHolderConcentrate();
-    fetchStockHolderAchievement();
+    // fetchStockHolderAchievement();
+    fetchStockMoodIndex();
 })
 
 function fetchPriceAndShare() {
@@ -140,6 +141,29 @@ function fetchStockHolderAchievement() {
                 return;
             }
             drawStockAchievementHist(result.data.list);
+        },
+        error:function(e){
+            console.log("function error")
+            console.log(e.status)
+            console.log(e.responseText)
+        }
+    })
+}
+
+function fetchStockMoodIndex() {
+    $.ajax({
+        type:"GET",
+        url:"http://124.70.139.25:8083/stock/mood/line",
+        async: false,
+        beforeSend:function(){
+            console.log("start to request /stock/mood/line")
+        },
+        success:function (result) {
+            d3.select("#stock-mood-index").remove()
+            if (result.data == null){
+                return;
+            }
+            drawStockMoodIndex(result.data);
         },
         error:function(e){
             console.log("function error")
@@ -351,6 +375,47 @@ function drawStockPriceHist(data) {
         .call(yAxis).attr("transform", `translate(${margin.left},0)`);
 }
 
+function drawStockMoodIndex(data) {
+    var margin = ({top: 30, right: 30, bottom: 30, left: 40})
+    var height = $("#moodIndex").height();
+    var width = $("#moodIndex").width();
+    var minIndex = d3.min(data.map(e=>e.stockPoint));
+    var maxIndex = d3.max(data.map(e=>e.stockPoint));
+    var minCount = d3.min(data.map(e=>e.stockIncreaseCount));
+    var maxCount = d3.max(data.map(e=>e.stockIncreaseCount));
+    var svg = d3.select("#moodIndex").append('svg').attr('width', width).attr('height', height).attr("id","stock-mood-index").style("background", "#ffffff");
+    var scale_x = d3.scaleUtc().domain(d3.extent(data, d => convertDateFromString(d.releaseDate))).range([margin.left, width - margin.right]);
+    var scale_y_index = d3.scaleLinear().domain([0.8*minIndex, 1.2*maxIndex]).nice().range([height - margin.bottom, margin.top]);
+    var scale_y_count = d3.scaleLinear().domain([0.8*minCount, 1.2*maxCount]).nice().range([height - margin.bottom, margin.top]);
+
+    var indexLine = d3.line().x(d=>scale_x(convertDateFromString(d.releaseDate))).y(d=>scale_y_index(d.stockPoint));
+
+    var countLine = d3.line().x(d=>scale_x(convertDateFromString(d.releaseDate))).y(d=>scale_y_count(d.stockIncreaseCount));
+
+    svg.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round").attr("d", indexLine)
+        .attr("text","测试1");
+
+    svg.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "red")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round").attr("d", countLine)
+        .attr("text","测试2");
+
+    svg.append("g").attr("font-size","20").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(scale_x).ticks(width / 80).tickSizeOuter(0));
+    svg.append("g").attr("font-size","20").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft().scale(scale_y_index)).call(g => g.select(".domain").remove())
+    svg.append("g").attr("font-size","20").attr("transform", `translate(${width - margin.right},0)`).call(d3.axisRight().scale(scale_y_count)).call(g => g.select(".domain").remove())
+
+}
+
 function drawStockHolderConcentrate(data) {
     var margin = ({top: 30, right: 0, bottom: 30, left: 40})
     var h = $("#stockHolderHist").height();
@@ -446,7 +511,6 @@ function drawStockAchievementHist(data) {
 function fetchStockPriceByType(data,object) {
     var x = d3.event.clientX;
     var y = d3.event.clientY;
-    console.log(object)
     $("#stock-panel").css("position", "absolute");
     $("#stock-panel").css("top", x);
     $("#stock-panel").css("left", y+800);
@@ -679,6 +743,13 @@ function getStockPanelDraggable() {
 
 function drawTargetForm(data) {
 
+}
+
+function convertDateFromString(dateString) {
+    if (dateString) {
+        var date = new Date(dateString)
+        return date;
+    }
 }
 
 function turnoff() {

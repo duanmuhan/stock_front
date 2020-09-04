@@ -48,6 +48,7 @@ $(function () {
                 success:function (result) {
                     d3.select("#stock-kitem-content").remove()
                     drawKitem(result.data);
+                    fetchAverageItem(result.data);
                 },
                 error:function(e){
                     console.log("function error")
@@ -72,22 +73,6 @@ $(function () {
                     console.log("function error")
                 }
             });
-            $.ajax({
-                type:"GET",
-                url:"http://124.70.139.25:8083/average?" + "stockId=" + currentStockId + "&type=2",
-                async: false,
-                beforeSend:function(){
-                    console.log("start to request /average")
-                },
-                success:function (result) {
-                    var dataList = result.data.fiveDayList;
-                    d3.select("#stock-index-content").remove()
-                    drawAverage(dataList)
-                },
-                error:function(e){
-                    console.log("function error")
-                }
-            });
             return item;
         },
         afterSelect:function (item) {
@@ -98,8 +83,25 @@ $(function () {
     initKItemTabEvent();
 });
 
-function f() {
-
+function fetchAverageItem(kDataItemList) {
+    $.ajax({
+        type:"GET",
+        url:"http://124.70.139.25:8083/average?" + "stockId=" + currentStockId + "&type=2",
+        async: false,
+        beforeSend:function(){
+            console.log("start to request /average")
+        },
+        success:function (result) {
+            d3.select("#stock-index-content").remove()
+            if (result.data == null){
+                return;
+            }
+            drawAverage(result.data,kDataItemList)
+        },
+        error:function(e){
+            console.log("function error")
+        }
+    });
 }
 
 function drawKitem(kDataSet) {
@@ -195,23 +197,56 @@ function getDealAmount(kItem) {
     return kItem.dealAmount;
 }
 
-function drawAverage(averageDataSet) {
+function drawAverage(averageDataSet,kDataSet) {
     var height = $("#stock-index").height();
     var width = $("#stock-index").width();
-    var margin = ({top: 30, right: 0, bottom: 30, left: 40})
-    var scale_x = d3.scaleUtc().domain(d3.extent(averageDataSet, d => d.date)).range([margin.left, width - margin.right]);
-    var scale_y = d3.scaleLinear().domain([0, d3.max(averageDataSet, d => d.price)]).nice().range([height - margin.bottom, margin.top]);
+    var margin = ({top: 30, right: 0, bottom: 30, left: 40});
+    var minPrice = d3.min(kDataSet.kitemList.map(e=>e.low));
+    var maxPrice = d3.max(kDataSet.kitemList.map(e=>e.high));
+    var scale_x = d3.scaleUtc().domain(d3.extent(averageDataSet.fiveDayList, d => convertDateFromString(d.date))).range([margin.left, width - margin.right]);
+    var scale_y = d3.scaleLinear().domain([0.8*minPrice, 1.2*maxPrice]).nice().range([height - margin.bottom, margin.top]);
     var svg = d3.select("#stock-index").append('svg').attr('width', width).attr('height', height).attr("id","stock-index-content").style("background", "#ffffff");
-    // var line = d3.line().x(d=>scale_x(d.date)).y(d=>scale_y(d.price));
-    // svg.append("path")
-    //     .datum(averageDataSet)
-    //     .attr("fill", "none")
-    //     .attr("stroke", "steelblue")
-    //     .attr("stroke-width", 1.5)
-    //     .attr("stroke-linejoin", "round")
-    //     .attr("stroke-linecap", "round")
-    //     .attr("d", line);
-    svg.append("g").attr("font-size","20").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(scale_x).ticks(10).tickSizeOuter(0));
+    var line = d3.line().x(d=>scale_x(convertDateFromString(d.date))).y(d=>scale_y(d.price));
+    var tenDayAverageLine = d3.line().x(d=>scale_x(convertDateFromString(d.date))).y(d=>scale_y(d.price));
+    var twentiesDayAverageLine = d3.line().x(d=>scale_x(convertDateFromString(d.date))).y(d=>scale_y(d.price));
+    var sixtiesDayAverageLine = d3.line().x(d=>scale_x(convertDateFromString(d.date))).y(d=>scale_y(d.price));
+    var oneHundredAndSixtiesDayAverageLine = d3.line().x(d=>scale_x(convertDateFromString(d.date))).y(d=>scale_y(d.price));
+    svg.append("path")
+        .datum(averageDataSet.fiveDayList)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round").attr("d", line);
+    svg.append("path")
+        .datum(averageDataSet.tenDayList)
+        .attr("fill", "none")
+        .attr("stroke", "red")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round").attr("d", tenDayAverageLine);
+    svg.append("path")
+        .datum(averageDataSet.twentiesDayList)
+        .attr("fill", "none")
+        .attr("stroke", "green")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round").attr("d", twentiesDayAverageLine);
+    svg.append("path")
+        .datum(averageDataSet.sixtiesDayList)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round").attr("d", sixtiesDayAverageLine);
+    svg.append("path")
+        .datum(averageDataSet.oneHundredAndTwentiesDayList)
+        .attr("fill", "none")
+        .attr("stroke", "yellow")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round").attr("d", oneHundredAndSixtiesDayAverageLine);
+    svg.append("g").attr("font-size","20").attr("transform", `translate(0,${height - margin.bottom})`).call(d3.axisBottom(scale_x).ticks(width / 80).tickSizeOuter(0));
     svg.append("g").attr("font-size","20").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft().scale(scale_y)).call(g => g.select(".domain").remove())
         .call(g => g.select(".tick:last-of-type text").clone()
             .attr("x", 3)
@@ -229,6 +264,8 @@ function drawOverView(overView) {
     $("#changeRate").empty();
     $("#rise-percent").empty();
     $("#score").empty();
+    $("#plateInfo").empty();
+    $("#technology").empty();
 
     $("#stockName").html(overView.stockName);
     $("#stockPrice").html(overView.price);
@@ -238,7 +275,7 @@ function drawOverView(overView) {
     $("#rise-percent").html(overView.change);
     $("#score").html(overView.plateInfo);
     $("#plateInfo").html(overView.score);
-    $("#technology").val(overView.sharePerPrice);
+    $("#technology").html(overView.technologyStr);
     if (overView.priceRate > 0){
         $('#stockName').css('color','red');
         $('#stockPrice').css('color','red');
@@ -320,4 +357,11 @@ function fetchKItem(stockId,type) {
             console.log(e.responseText)
         }
     })
+}
+
+function convertDateFromString(dateString) {
+    if (dateString) {
+        var date = new Date(dateString)
+        return date;
+    }
 }
