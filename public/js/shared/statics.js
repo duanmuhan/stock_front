@@ -5,7 +5,7 @@ $(function () {
     fetchStockChangeValue();
     fetchStockPriceHistValue();
     fetchStockHolderConcentrate();
-    // fetchStockHolderAchievement();
+    fetchStockHolderAchievement();
     fetchStockMoodIndex();
 })
 
@@ -174,68 +174,62 @@ function fetchStockMoodIndex() {
 }
 
 function drawScatterDiagram(data) {
-    var h = $("#mixed-chart").height();
-    var w = $("#mixed-chart").width();
-    var margin = ({top: 30, right: 0, bottom: 30, left: 40})
-    var svg = d3.select("#mixed-chart").append('svg').attr('width', w).attr('height', h).style("background", "#ffffff");
+    var margin = ({top: 30, right: 40, bottom: 30, left: 40})
+    var height = $("#mixed-chart").height();
+    var width = $("#mixed-chart").width();
     var maxPrice = d3.max(data.map(e=>e.price));
     var minPrice = d3.min(data.map(e=>e.price));
     var perCommonMaxShare = d3.max(data.map(e=>e.basicEarningsPerCommonShare));
     var perCommonMinShare = d3.min(data.map(e=>e.basicEarningsPerCommonShare));
-    var x_scale = d3.scaleLog().domain([minPrice, maxPrice]).range([margin.left, w - margin.right]);
-    var y_scale = d3.scalePow().exponent(0.3).domain([perCommonMinShare, perCommonMaxShare]).nice().range([h - margin.bottom, margin.top]);;
-    var tooltip = d3.select("circle").append("div")
-        .attr("class","tooltip")
+    var scale_x = d3.scaleLog().domain([minPrice, maxPrice]).range([margin.left, width - margin.right]);
+    var scale_y = d3.scalePow().exponent(0.2).domain([perCommonMinShare, perCommonMaxShare]).nice().range([height - margin.bottom, margin.top]);
+
+    var svg = d3.select("#mixed-chart").append('svg').attr('width', width).attr('height', height).style("background", "#ffffff");
+
+    var tooltip = d3.select("body").append("div")
+        .attr("class","tooltip") //用于css设置类样式
+        .attr("opacity",0.0);
+
+    var end = d3.rgb(255,0,0);	//红色
+    var begin = d3.rgb(30,144,255);
+    var compute = d3.interpolate(begin,end);
+    var colorLine = d3.scaleLog().domain([minPrice,maxPrice]).range([0,1]);
     svg.selectAll("circle").data(data).enter()
         .append("circle")
         .attr("id","scatterDiagram")
         .attr("cx", function(d) {
-            return x_scale(d.price);
+            return scale_x(d.price);
         })
         .attr("cy", function(d) {
-            return h - y_scale(d.basicEarningsPerCommonShare);
+            return scale_y(d.basicEarningsPerCommonShare);
         })
         .attr("r", 4)
-        .attr("fill","red")
-        .on("mouseenter",function (d) {
-            var x = x_scale(d.price);
-            var y = h - y_scale(d.basicEarningsPerCommonShare);
-            svg.append("text")
-                .attr("id", "tooltip")
-                .attr("x", x)
-                .attr("y", y)
-                .attr("text-anchor", "middle")
-                .attr("font-family", "sans-setif")
-                .attr("font-size", "11px")
-                .attr("font-weight", "bold")
-                .attr("fill", "blue")
-                //文本内容
-                .text("股票id" + d.stockId);
+        .attr("fill",function (d) {
+            return compute(colorLine(d.price));
+        })
+        .on("touchmove mousemove",function (d) {
+            tooltip.html("股票id: " + d.stockId + "<br/>"
+                + "股票名称: " + d.stockName + "<br/>"
+                + "股票价格: " + d.price + "<br/>"
+                + "每股分红: " + d.basicEarningsPerCommonShare + "<br/>"
+                + "更新时间: " + d.releaseDate + "<br/>")
+                .style("left",(d3.event.pageX)+"px")
+                .style("top",(d3.event.pageY+20)+"px")
+                .style("opacity",1.0);
         })
         .on("mouseout",function (d) {
-            d3.select("#tooltip").remove();
+            tooltip.style("opacity",0.0);
         }).on("mouseover",function(d) {
-            var x = x_scale(d.price);
-            var y = h - y_scale(d.basicEarningsPerCommonShare);
-            console.log("mouseover");
-            svg.append("text")
-                .attr("id", "tooltip")
-                .attr("x", x)
-                .attr("y", y)
-                .attr("text-anchor", "middle")
-                .attr("font-family", "sans-setif")
-                .attr("font-size", "11px")
-                .attr("font-weight", "bold")
-                .attr("fill", "blue")
-                //文本内容
-                .text("股票id" + d.stockId);
         }
     )
-    svg.append("g")
-        .call(x_scale).attr("transform", `translate(0,${h - margin.bottom})`);
+    svg.append("g").attr("font-size","20")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(scale_x).ticks(width / 80).tickSizeOuter(0));
+    svg.append("g").attr("font-size","20")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft().scale(scale_y))
+        .call(g => g.select(".domain").remove());
 
-    svg.append("g")
-        .call(y_scale).attr("transform", `translate(${margin.left},0)`);
 }
 
 function drawHistDiagram(data) {
@@ -313,7 +307,7 @@ function drawStockChangeHistChart(data){
         .attr("width", xScale.bandwidth());
     svg.append("g").selectAll("text")
         .data(data)
-        .attr("font-size", 12)
+        .attr("font-size", 6)
         .join("text")
         .attr("text-anchor", "begin")
         .attr("x", (d,i) => xScale(i) + xScale.bandwidth() / 3)
@@ -321,10 +315,15 @@ function drawStockChangeHistChart(data){
         .text(d => d.changeNum);
 
     svg.append("g")
-        .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`);
+        .call(xAxis).attr("transform", `translate(0,${h - margin.bottom})`)
 
     svg.append("g")
-        .call(yAxis).attr("transform", `translate(${margin.left},0)`);
+        .call(yAxis).attr("transform", `translate(${margin.left},0)`)
+        .append("text")
+        .text("price(￥)")
+        .attr("text-anchor","end")//字体尾部对齐
+        .attr("dy","1em");//沿y轴平移一个字体的大小;
+
 
 }
 
@@ -443,7 +442,7 @@ function drawStockHolderConcentrate(data) {
         .attr("height", d => yScale(0) - yScale(d.second))
         .attr("width", xScale.bandwidth())
         .on("mousedown",function (d,i) {
-            fetchStockHolderDetailByData(d.key,this);
+            fetchStockHolderDetailByData(d.first,this);
         });
     svg.append("g").selectAll("text")
         .data(data)
@@ -488,7 +487,7 @@ function drawStockAchievementHist(data) {
         .attr("height", d => yScale(0) - yScale(d.second))
         .attr("width", xScale.bandwidth())
         .on("mousedown",function (d,i) {
-            fetchStockAchievementDetailByData(d.key,this);
+            fetchStockAchievementDetailByData(d.first,this);
         });
 
     svg.append("g").selectAll("text")
@@ -509,11 +508,11 @@ function drawStockAchievementHist(data) {
 }
 
 function fetchStockPriceByType(data,object) {
-    var x = d3.event.clientX;
-    var y = d3.event.clientY;
+    var x = d3.event.pageX;
+    var y = d3.event.pageY;
     $("#stock-panel").css("position", "absolute");
-    $("#stock-panel").css("top", x);
-    $("#stock-panel").css("left", y+800);
+    $("#stock-panel").css("top", y);
+    $("#stock-panel").css("left", x);
     $('#stock-panel-tbody').bootstrapTable('destroy');
     $('#stock-panel-tbody').bootstrapTable({
         url: "http://124.70.139.25:8083/stock/price/type",
@@ -567,11 +566,11 @@ function fetchStockPriceByType(data,object) {
 }
 
 function fetchStockHolderDetailByData(data,object) {
-    var x = d3.event.clientX;
-    var y = d3.event.clientY;
+    var x = d3.event.pageX;
+    var y = d3.event.pageY;
     $("#stock-panel").css("position", "absolute");
-    $("#stock-panel").css("top", x+1200);
-    $("#stock-panel").css("left", y+800);
+    $("#stock-panel").css("top", y);
+    $("#stock-panel").css("left", x);
     $('#stock-panel-tbody').bootstrapTable('destroy');
     $('#stock-panel-tbody').bootstrapTable({
         url: "http://124.70.139.25:8083/stockholder/marketValue/type",
@@ -602,7 +601,6 @@ function fetchStockHolderDetailByData(data,object) {
         cardView: false,                    //是否显示详细视图
         detailView: false,                 //是否显示父子表
         onLoadSuccess: function(result){
-            console.log(result.data);
             $('#stock-panel-tbody').bootstrapTable('load', result.data);
         },
         columns: [{
@@ -645,12 +643,12 @@ function fetchStockHolderDetailByData(data,object) {
 }
 
 function fetchStockAchievementDetailByData(data,object) {
-    var x = d3.event.clientX;
-    var y = d3.event.clientY;
+    var x = d3.event.pageX;
+    var y = d3.event.pageY;
     console.log(object)
     $("#stock-panel").css("position", "absolute");
-    $("#stock-panel").css("top", x+1200);
-    $("#stock-panel").css("left", y+800);
+    $("#stock-panel").css("top", y);
+    $("#stock-panel").css("left", x);
     $('#stock-panel-tbody').bootstrapTable('destroy');
     $('#stock-panel-tbody').bootstrapTable({
         url: "http://124.70.139.25:8083/stock/achievement/type/list",
