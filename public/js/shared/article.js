@@ -38,7 +38,7 @@ function drawNews(data){
 
         var plateStr = "";
         for (j=0;j<data[i].platePairList.length; j++){
-            plateStr = plateStr + "<label id="+ data[i].platePairList[j].key + " class='badge badge-danger'" + " onclick=displayStockItems(this) " + ">" + data[i].platePairList[j].value + "</label>"
+            plateStr = plateStr + "<label id="+ data[i].platePairList[j].first + " class='badge badge-danger'" + " onclick=displayStockItems(this) " + ">" + data[i].platePairList[j].second + "</label>"
         }
 
         var platformStr = "<a href = " + source + ">" + platform + "</a>";
