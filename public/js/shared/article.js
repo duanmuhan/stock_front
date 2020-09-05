@@ -59,6 +59,7 @@ function displayStockItems(element) {
     var plateId=element.id;
     var x = element.offsetTop;
     var y = element.offsetLeft;
+    console.log("x: " + x + "y: " + y);
     $("#stock-panel").css("position", "absolute");
     $("#stock-panel").css("top", y);
     $("#stock-panel").css("left", x);
