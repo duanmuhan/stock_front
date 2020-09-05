@@ -63,7 +63,7 @@ function displayStockItems(element) {
     $("#stock-panel").css("top", y);
     $("#stock-panel").css("left", x);
     $('#stock-panel-tbody').bootstrapTable({
-        url: "http://127.0.0.1:8083/plate/stock/list",
+        url: "http://124.70.139.25:8083/plate/stock/list",
         toolbar: '#toolbar',
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
