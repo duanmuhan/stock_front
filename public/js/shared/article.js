@@ -57,43 +57,60 @@ function drawNews(data){
 
 function displayStockItems(element) {
     var plateId=element.id;
-    $.ajax({
-        type:"GET",
-        url:"http://124.70.139.25:8083/plate/stock/list?" + "plateId=" + plateId,
-        async: false,
-        beforeSend:function(){
-            console.log("start to request /plate/stock/list")
-        },
-        success:function (result) {
-            if (result.code != 200){
-                alert("error:" + result.message);
+    var x = element.offsetTop;
+    var y = element.offsetLeft;
+    $("#stock-panel").css("position", "absolute");
+    $("#stock-panel").css("top", y);
+    $("#stock-panel").css("left", x);
+    $('#stock-panel-tbody').bootstrapTable({
+        url: "http://127.0.0.1:8083/plate/stock/list",
+        toolbar: '#toolbar',
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination : true,                   //是否显示分页（*）
+        sortable: false,                     //是否启用排序                 //排序方式
+        queryParams: function(params){
+            return {
+                pageSize: params.limit,
+                pageNo: params.offset/params.limit,
+                plateId:plateId
             }
-            drawStockItemsDisplayPanel(result.data,element);
+        },         //传递参数（*）
+        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber:1,                       //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+        smartDisplay:false,
+        undefinedText: '---',
+        showColumns: false,                 //是否显示所有的列
+        showRefresh: false,                 //是否显示刷新按钮
+        minimumCountColumns: 1,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
+        cardView: false,                    //是否显示详细视图
+        detailView: false,                 //是否显示父子表
+        onLoadSuccess: function(result){
+            $('#stock-panel-tbody').bootstrapTable('load', result.data);
         },
-        error:function(e){
-            console.log("function error")
-        }
+        columns: [{
+            field:'stockId',
+            title:'股票id',
+        },{
+            field:'stockName',
+            title:'股票名称',
+        },{
+            field:'price',
+            title:'股票价格',
+        },{
+            field:'date',
+            title:'更新日期',
+        }],
     });
+    $("#stock-panel").fadeIn("100");
 }
 
 function drawStockItemsDisplayPanel(data,object) {
-    var x = object.offsetTop;
-    var y = object.offsetLeft;
-    $("#stock-panel").css("position", "absolute");
-    $("#stock-panel").css("top", x);
-    $("#stock-panel").css("left", y+400);
-    $("#stock-panel-tbody").empty();
-    for(i=0;i<data.length; i++){
-        var $trTemp = $("<tr class='parent'></tr>");
-        $trTemp.append("<td> <i class=" + "fa fa-chevron-right" + "data-flag=" + i + "></i> "+ data[i].stockId +"</td>");
-        $trTemp.append("<td>"+ data[i].stockName +"</td>");
-        $trTemp.append("<td>"+ data[i].price +"</td>");
-        $trTemp.append("<td>"+ data[i].dealAmount +"</td>");
-        $trTemp.append("<td>"+ data[i].date +"</td>");
-        $trTemp.appendTo("#stock-panel-tbody");
 
-    }
-    $("#stock-panel").fadeIn("100");
 
 }
 
