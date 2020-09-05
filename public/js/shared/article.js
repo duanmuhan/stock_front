@@ -62,6 +62,7 @@ function displayStockItems(element) {
     $("#stock-panel").css("position", "absolute");
     $("#stock-panel").css("top", x);
     $("#stock-panel").css("left", y);
+    $('#stock-panel-tbody').bootstrapTable('destroy');
     $('#stock-panel-tbody').bootstrapTable({
         url: "http://124.70.139.25:8083/plate/stock/list",
         toolbar: '#toolbar',
