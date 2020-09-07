@@ -48,7 +48,7 @@ $(function () {
                 success:function (result) {
                     d3.select("#stock-kitem-content").remove()
                     drawKitem(result.data);
-                    fetchAverageItem(result.data);
+                    // fetchAverageItem(result.data);
                 },
                 error:function(e){
                     console.log("function error")
