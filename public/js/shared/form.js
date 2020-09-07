@@ -3,7 +3,7 @@ $(function(){
      renderTopValuePerPrice();
      renderHighestIncreaseShare();
      renderHighestPeriodIncreaseShare();
-     renderStockAchievement(currentStartPagePage);
+     renderStockAchievement();
      renderStockScore();
      renderStockTechnology()
 })
