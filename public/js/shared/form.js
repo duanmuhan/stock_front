@@ -7,8 +7,6 @@ $(function(){
      renderStockScore();
      renderStockTechnology()
 })
-var pageSize = 10;
-var currentStartPagePage = 1;
 function renderTopValuePerPrice(){
                 $('#latestShareBonus').bootstrapTable({
                     url: "http://124.70.139.25:8083/topValuePerPrice/form",
@@ -199,7 +197,6 @@ function renderStockAchievement(){
                     cardView: false,                    //是否显示详细视图
                     detailView: false,                 //是否显示父子表
                     onLoadSuccess: function(data){
-                           console.log(data.data);
                           $('#stockAchievement').bootstrapTable('load', data.data);
                     },
                     columns: [{
